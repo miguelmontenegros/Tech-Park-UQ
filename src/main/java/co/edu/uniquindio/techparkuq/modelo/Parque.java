@@ -68,4 +68,16 @@ public class Parque {
                 "Nómina de Empleados: " + listaEmpleados.size() + "\n" +
                 "Visitantes actuales: " + listaVisitantes.size();
     }
+    public boolean validarAcceso(Visitante visitante, Atraccion atraccion){
+        if(atraccion.getEstadoAtraccion().name().equals("MANTENIMIENTO")){
+            System.out.println("ACCESO DENEGADO: "+ atraccion.getNombre() + " está en mantenimento.");
+            return false;
+        }
+        if (visitante.getEstatura()<atraccion.getEstaturaMinima()){
+            System.out.println("ACCESO DENEGADO: " + visitante.getNombre() + " no cumple con la estatura mínima (" + atraccion.getEstaturaMinima() + " m).");
+            return false;
+        }
+        System.out.println("ACCESO CONCEDIDO: " + visitante.getNombre() + " ya puede disfrutar de " + atraccion.getNombre());
+        return true;
+    }
 }
