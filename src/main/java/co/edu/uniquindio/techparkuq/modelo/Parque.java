@@ -1,10 +1,11 @@
 package co.edu.uniquindio.techparkuq.modelo;
 import co.edu.uniquindio.techparkuq.modelo.enums.EstadoAtraccion;
+import co.edu.uniquindio.techparkuq.modelo.interfaces.IGestionable;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Parque {
+public class Parque implements IGestionable {
     private String nombre;
     private int capacidadMaxima;
     private double ingresosDiarios;
@@ -138,4 +139,34 @@ public class Parque {
         System.out.println("⚠️ La atracción '" + nombreAtraccion + "' no se encuentra en el parque.");
         return null;
     }
-}
+
+
+        @Override
+
+        public void crearAtraccion(Atraccion atraccion) {
+            System.out.println("Atracción " + atraccion.getNombre() + " registrada.");
+        }
+
+        @Override
+
+        public void eliminarAtraccion(String nombreAtraccion) {
+
+            for (Zona zona : listaZonas) {
+                List<Atraccion> lista = zona.getListaAtracciones();
+
+                for (int i = lista.size() - 1; i >= 0; i--) {
+
+                    if (lista.get(i).getNombre().equalsIgnoreCase(nombreAtraccion)) {
+                        lista.remove(i);
+                        System.out.println("Atracción eliminada con éxito.");
+                    }
+                }
+            }
+        }
+
+        @Override
+        public void crearZona(Zona zona) {
+            listaZonas.add(zona);
+            System.out.println("Zona " + zona.getNombre() + " creada.");
+        }
+    }
