@@ -130,22 +130,17 @@ public class Parque implements IGestionable {
 
 
                 if (atraccion.getNombre().equalsIgnoreCase(nombreAtraccion)) {
-                    System.out.println("📍 Atracción encontrada en la zona: " + zona.getNombre());
+                    System.out.println("Atracción encontrada en la zona: " + zona.getNombre());
                     return atraccion;
                 }
             }
         }
 
-        System.out.println("⚠️ La atracción '" + nombreAtraccion + "' no se encuentra en el parque.");
+        System.out.println("La atracción '" + nombreAtraccion + "' no se encuentra en el parque.");
         return null;
     }
 
 
-        @Override
-
-        public void crearAtraccion(Atraccion atraccion) {
-            System.out.println("Atracción " + atraccion.getNombre() + " registrada.");
-        }
 
         @Override
 
@@ -163,10 +158,29 @@ public class Parque implements IGestionable {
                 }
             }
         }
+    @Override
 
-        @Override
-        public void crearZona(Zona zona) {
+    public void crearZona(Zona zona) {
+        if (zona != null) {
             listaZonas.add(zona);
-            System.out.println("Zona " + zona.getNombre() + " creada.");
+            System.out.println("Zona '" + zona.getNombre() + "' creada y registrada.");
         }
+    }
+
+    @Override
+
+    public void crearAtraccion(Atraccion atraccion) {
+        if (atraccion == null) {
+            System.out.println(" Error: Atracción nula.");
+            return;
+        }
+
+        if (listaZonas.isEmpty()) {
+            System.out.println("Error: No hay zonas creadas para asignar la atracción.");
+            return;
+        }
+
+        listaZonas.get(0).agregarAtraccion(atraccion);
+        System.out.println("Atracción '" + atraccion.getNombre() + "' registrada con éxito.");
+    }
     }
