@@ -118,4 +118,24 @@ public class Parque {
         }
         return todas;
     }
+
+    public Atraccion buscarAtraccionPorNombre(String nombreAtraccion) {
+
+
+        for (Zona zona : listaZonas) {
+
+
+            for (Atraccion atraccion : zona.getListaAtracciones()) {
+
+
+                if (atraccion.getNombre().equalsIgnoreCase(nombreAtraccion)) {
+                    System.out.println("📍 Atracción encontrada en la zona: " + zona.getNombre());
+                    return atraccion;
+                }
+            }
+        }
+
+        System.out.println("⚠️ La atracción '" + nombreAtraccion + "' no se encuentra en el parque.");
+        return null;
+    }
 }
