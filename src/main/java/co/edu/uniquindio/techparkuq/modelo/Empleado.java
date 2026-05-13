@@ -1,12 +1,13 @@
 package co.edu.uniquindio.techparkuq.modelo;
 
-public class Empleado extends Persona{
+public class Empleado extends Persona {
     private String rol;
 
-    public Empleado(String rol, String nombre, String documento){
-        super(nombre, documento);
+    public Empleado(String rol, String nombre, String documento, int edad) {
+        super(nombre, documento, edad);
         this.rol = rol;
     }
+
     public String getRol() {
         return rol;
     }
@@ -16,7 +17,7 @@ public class Empleado extends Persona{
     }
 
     @Override
-    public String toString(){
-        return "Nombre: "+ getNombre() + "\n Documento: "+ getDocumento() + "\n Rol: "+ rol;
+    public String toString() {
+        return "Nombre: " + getNombre() + "\n Documento: " + getDocumento() + "\n Edad: " + getEdad() + "\n Rol: " + rol;
     }
 }
