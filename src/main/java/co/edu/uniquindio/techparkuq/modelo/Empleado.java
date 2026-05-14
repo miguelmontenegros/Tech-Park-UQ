@@ -1,5 +1,7 @@
 package co.edu.uniquindio.techparkuq.modelo;
 
+import co.edu.uniquindio.techparkuq.modelo.abstractas.Persona;
+
 public class Empleado extends Persona {
     private String rol;
 

@@ -1,5 +1,7 @@
 package co.edu.uniquindio.techparkuq.modelo;
-
+import co.edu.uniquindio.techparkuq.modelo.abstractas.Ticket;
+import co.edu.uniquindio.techparkuq.modelo.abstractas.Atraccion;
+import co.edu.uniquindio.techparkuq.modelo.abstractas.Persona;
 import co.edu.uniquindio.techparkuq.modelo.interfaces.INotificable;
 
 import java.util.ArrayList;
@@ -7,7 +9,7 @@ import java.util.List;
 
 public class Visitante extends Persona implements INotificable {
 
-    private int edad;
+private int edad;
 private double estatura;
 private double saldoVirtual;
 private String fotografia;

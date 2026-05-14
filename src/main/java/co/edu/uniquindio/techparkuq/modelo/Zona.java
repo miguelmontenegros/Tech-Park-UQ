@@ -1,5 +1,7 @@
 package co.edu.uniquindio.techparkuq.modelo;
 
+import co.edu.uniquindio.techparkuq.modelo.abstractas.Atraccion;
+
 import java.util.ArrayList;
 import java.util.List;
 

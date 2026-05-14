@@ -1,5 +1,5 @@
 package co.edu.uniquindio.techparkuq.modelo.interfaces;
-import co.edu.uniquindio.techparkuq.modelo.Atraccion;
+import co.edu.uniquindio.techparkuq.modelo.abstractas.Atraccion;
 import co.edu.uniquindio.techparkuq.modelo.Zona;
 
 public interface IGestionable {

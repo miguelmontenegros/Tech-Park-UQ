@@ -1,4 +1,5 @@
 package co.edu.uniquindio.techparkuq.modelo;
+import co.edu.uniquindio.techparkuq.modelo.abstractas.Atraccion;
 import co.edu.uniquindio.techparkuq.modelo.enums.EstadoAtraccion;
 import co.edu.uniquindio.techparkuq.modelo.interfaces.IGestionable;
 
