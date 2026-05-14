@@ -32,6 +32,25 @@ public class Zona {
             listaAtracciones.add(atraccion);
         }
     }
+    public Atraccion buscarAtraccion(String nombreAtraccion) {
+        for (Atraccion a : listaAtracciones) {
+            if (a.getNombre().equalsIgnoreCase(nombreAtraccion)) {
+                return a;
+            }
+        }
+        return null;
+    }
+
+    public boolean eliminarAtraccion(String nombreAtraccion) {
+        for (int i = 0; i < listaAtracciones.size(); i++) {
+            if (listaAtracciones.get(i).getNombre().equalsIgnoreCase(nombreAtraccion)) {
+                listaAtracciones.remove(i);
+                return true;
+            }
+        }
+        return false;
+    }
+
     public String getNombre() {
         return nombre;
     }
