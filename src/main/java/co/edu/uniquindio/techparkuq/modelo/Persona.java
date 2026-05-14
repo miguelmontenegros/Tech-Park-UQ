@@ -3,12 +3,10 @@ package co.edu.uniquindio.techparkuq.modelo;
 public abstract class Persona {
     protected String nombre;
     protected String documento;
-    protected int edad;
 
-    public Persona(String nombre, String documento, int edad) {
+    public Persona(String nombre, String documento) {
         this.nombre = nombre;
         this.documento = documento;
-        this.edad = edad;
     }
 
     public String getNombre() {
@@ -19,16 +17,12 @@ public abstract class Persona {
         return documento;
     }
 
-    public int getEdad() {
-        return edad;
-    }
 
     @Override
     public String toString() {
         return "Persona{" +
                 "nombre='" + nombre + '\'' +
                 ", documento='" + documento + '\'' +
-                ", edad=" + edad +
                 '}';
     }
 }
