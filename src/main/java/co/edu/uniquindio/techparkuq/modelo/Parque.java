@@ -1,7 +1,7 @@
 package co.edu.uniquindio.techparkuq.modelo;
 import co.edu.uniquindio.techparkuq.modelo.enums.EstadoAtraccion;
 import co.edu.uniquindio.techparkuq.modelo.interfaces.IGestionable;
-import co.edu.uniquindio.techparkuq.modelo.enums.TipoAlertaClimatica;
+import co.edu.uniquindio.techparkuq.modelo.enums.AlertaClimatica;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +13,7 @@ public class Parque implements IGestionable {
     private List<Zona> listaZonas;
     private List<Empleado> listaEmpleados;
     private List<Visitante> visitantesActivos;
-    private TipoAlertaClimatica estadoClima;
+    private AlertaClimatica estadoClima;
 
     public Parque(String nombre, int capacidadMaxima) {
         this.nombre = nombre;
@@ -22,7 +22,7 @@ public class Parque implements IGestionable {
         this.listaZonas = new ArrayList<>();
         this.listaEmpleados = new ArrayList<>();
         this.visitantesActivos = new ArrayList<>();
-        this.estadoClima = TipoAlertaClimatica.NINGUNA;
+        this.estadoClima = AlertaClimatica.NINGUNA;
     }
 
     public void contratarEmpleado(Empleado empleado) {
@@ -30,7 +30,7 @@ public class Parque implements IGestionable {
 
     }
 
-    public TipoAlertaClimatica getEstadoClima() {
+    public AlertaClimatica getEstadoClima() {
         return estadoClima;
     }
 
@@ -146,7 +146,7 @@ public class Parque implements IGestionable {
         return null;
     }
 
-    public void cambiarEstadoClima(TipoAlertaClimatica nuevaAlerta) {
+    public void cambiarEstadoClima(AlertaClimatica nuevaAlerta) {
 
         this.estadoClima = nuevaAlerta;
         System.out.println("\nSISTEMA CLIMA: Alerta cambiada a " + nuevaAlerta);
