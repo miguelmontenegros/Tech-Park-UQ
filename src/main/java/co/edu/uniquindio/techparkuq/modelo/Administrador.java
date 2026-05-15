@@ -14,6 +14,29 @@ public class Administrador extends Empleado implements IGestionable {
         this.parque = parque;
     }
 
+
+    public void asignarOperadorZona(Operador operador, Zona zona) {
+        if (operador != null && zona != null) {
+            operador.setZonaAsignada(zona);
+            zona.getListOperadores().add(operador);
+            System.out.println("LOG: Operador " + operador.getNombre() + " asignado a " + zona.getNombre());
+        }
+    }
+    public void activarAlertaClima(TipoAlertaClimatica alerta) {
+        if (parque != null && alerta != null) {
+            parque.setEstadoClima(alerta);
+            System.out.println("ALERTA: El administrador ha cambiado el clima a " + alerta);
+        }
+    }
+    public Reporte generarReporte() {
+        if (parque != null) {
+            // Aquí se llamaría a la lógica de recolección de datos del parque
+            return new Reporte(parque.getListaAtracciones(), parque.getListaVentas());
+        }
+        return null;
+    }
+
+
     @Override
     public void crearAtraccion(Atraccion atraccion) {
         if (atraccion != null && parque != null) {
