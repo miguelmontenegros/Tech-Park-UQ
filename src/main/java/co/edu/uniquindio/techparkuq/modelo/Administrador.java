@@ -1,4 +1,5 @@
 package co.edu.uniquindio.techparkuq.modelo;
+import co.edu.uniquindio.techparkuq.modelo.abstractas.Empleado;
 import co.edu.uniquindio.techparkuq.modelo.interfaces.IGestionable;
 import co.edu.uniquindio.techparkuq.modelo.abstractas.Atraccion;
 import java.util.Iterator;
@@ -30,7 +31,6 @@ public class Administrador extends Empleado implements IGestionable {
     }
     public Reporte generarReporte() {
         if (parque != null) {
-            // Aquí se llamaría a la lógica de recolección de datos del parque
             return new Reporte(parque.getListaAtracciones(), parque.getListaVentas());
         }
         return null;

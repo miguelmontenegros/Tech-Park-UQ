@@ -2,10 +2,12 @@ package co.edu.uniquindio.techparkuq.modelo;
 
 import co.edu.uniquindio.techparkuq.modelo.abstractas.Persona;
 
-public class Empleado extends Persona {
+public abstract class Empleado extends Persona {
+
     private String rol;
     private int edad;
     private double salario;
+
 
     public Empleado(String rol, String nombre, String documento, int edad) {
         super(nombre, documento);
@@ -13,6 +15,8 @@ public class Empleado extends Persona {
         this.edad = edad;
         this.salario = 0.0;
     }
+
+
 
     public String getRol() {
         return rol;
@@ -38,6 +42,7 @@ public class Empleado extends Persona {
         this.salario = salario;
     }
 
+
     @Override
     public String toString() {
         return "Empleado {" +
@@ -45,7 +50,7 @@ public class Empleado extends Persona {
                 ", Documento: '" + getDocumento() + '\'' +
                 ", Rol: '" + rol + '\'' +
                 ", Edad: " + edad +
-                ", Salario: " + salario +
+                ", Salario: $" + salario +
                 '}';
     }
 }
