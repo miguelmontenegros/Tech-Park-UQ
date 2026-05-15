@@ -1,4 +1,5 @@
 package co.edu.uniquindio.techparkuq.modelo;
+import co.edu.uniquindio.techparkuq.modelo.abstractas.Empleado;
 import co.edu.uniquindio.techparkuq.modelo.interfaces.IGestionable;
 import co.edu.uniquindio.techparkuq.modelo.abstractas.Atraccion;
 import java.util.Iterator;
