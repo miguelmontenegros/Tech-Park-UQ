@@ -1,4 +1,4 @@
-}package co.edu.uniquindio.techparkuq.modelo.abstractas;
+package co.edu.uniquindio.techparkuq.modelo.abstractas;
 
 import co.edu.uniquindio.techparkuq.modelo.enums.EstadoAtraccion;
 
