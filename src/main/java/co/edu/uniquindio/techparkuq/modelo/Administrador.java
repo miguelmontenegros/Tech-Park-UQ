@@ -14,7 +14,6 @@ public class Administrador extends Empleado implements IGestionable {
         this.parque = parque;
     }
 
-
     public void asignarOperadorZona(Operador operador, Zona zona) {
         if (operador != null && zona != null) {
             operador.setZonaAsignada(zona);
@@ -30,7 +29,6 @@ public class Administrador extends Empleado implements IGestionable {
     }
     public Reporte generarReporte() {
         if (parque != null) {
-            // Aquí se llamaría a la lógica de recolección de datos del parque
             return new Reporte(parque.getListaAtracciones(), parque.getListaVentas());
         }
         return null;
@@ -49,16 +47,18 @@ public class Administrador extends Empleado implements IGestionable {
     public void eliminarAtraccion(String nombre) {
         if (parque != null && nombre != null) {
             boolean eliminada = false;
-            Iterator<Atraccion> it = parque.getListaAtracciones().iterator();
-            while (it.hasNext()) {
-                if (it.next().getNombre().equalsIgnoreCase(nombre)) {
-                    it.remove();
+            for (int i = 0; i < parque.getListaAtracciones().size(); i++) {
+                Atraccion a = parque.getListaAtracciones().get(i);
+                if (a.getNombre().equalsIgnoreCase(nombre)) {
+                    parque.getListaAtracciones().remove(i);
                     eliminada = true;
                     System.out.println("ÉXITO: Atracción '" + nombre + "' eliminada del sistema.");
                     break;
                 }
             }
-            if (!eliminada) System.out.println("ERROR: No se encontró la atracción: " + nombre);
+            if (!eliminada) {
+                System.out.println("ERROR: No se encontró la atracción: " + nombre);
+            }
         }
     }
 
