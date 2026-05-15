@@ -15,6 +15,27 @@ public class Reporte {
         this.alertasMantenimiento = alertasMantenimiento;
     }
 
+    public void generarEstadisticasAtracciones() {
+        System.out.println("\n==== ESTADÍSTICAS DEL TECH-PARK UQ ====");
+        System.out.println("Fecha de corte: " + this.fecha);
+        System.out.println("Ingresos Diarios Totales: $" + this.ingresosDiarios);
+        System.out.println("Atracciones cerradas por clima hoy: " + this.cierresPorClima);
+        System.out.println("Alertas de mantenimiento registradas: " + this.alertasMantenimiento);
+        System.out.println("=======================================\n");
+    }
+    public void exportarReporte() {
+        String contenidoExportacion =
+                "REPORTE OFICIAL TECH-PARK UQ\n" +
+                        "Fecha: " + this.fecha + "\n" +
+                        "Ingresos Diarios: $" + this.ingresosDiarios + "\n" +
+                        "Cierres de Atracciones por Clima: " + this.cierresPorClima + "\n" +
+                        "Alertas de Mantenimiento Ejecutadas: " + this.alertasMantenimiento;
+
+        System.out.println("Simulando exportación de datos...");
+        System.out.println("Contenido preparado para exportar:\n" + contenidoExportacion);
+        System.out.println("ÉXITO: Reporte procesado correctamente en memoria.");
+    }
+
     public LocalDate getFecha() { return fecha; }
     public void setFecha(LocalDate fecha) { this.fecha = fecha; }
 
