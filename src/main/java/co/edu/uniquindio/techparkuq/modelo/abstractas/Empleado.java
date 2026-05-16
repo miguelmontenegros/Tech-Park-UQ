@@ -1,4 +1,4 @@
-package co.edu.uniquindio.techparkuq.modelo;
+package co.edu.uniquindio.techparkuq.modelo.abstractas;
 
 import co.edu.uniquindio.techparkuq.modelo.abstractas.Persona;
 

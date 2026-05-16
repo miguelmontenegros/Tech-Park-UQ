@@ -1,5 +1,5 @@
 package co.edu.uniquindio.techparkuq.modelo;
-
+import co.edu.uniquindio.techparkuq.modelo.abstractas.Atraccion;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +10,7 @@ public class Zona {
     private int capacidadMaxima;
     private int aforoActual;
     private List<Atraccion> listaAtracciones;
+    private List<Operador> listOperadores;
 
 
     public Zona(String nombre, int capacidadMaxima) {
@@ -17,6 +18,7 @@ public class Zona {
         this.capacidadMaxima = capacidadMaxima;
         this.aforoActual = 0;
         this.listaAtracciones = new ArrayList<>();
+        this.listOperadores = new ArrayList<>();
     }
 
 
@@ -78,6 +80,8 @@ public class Zona {
     public List<Atraccion> getListaAtracciones() {
         return listaAtracciones;
     }
+
+    public List<Operador> getListOperadores() { return listOperadores; }
 
     @Override
     public String toString(){

@@ -11,8 +11,10 @@ import java.time.LocalDate;
 public class Operador extends Empleado {
 
 
+    private Zona zonaAsignada;
     private List<Atraccion> listAtraccionesGestionadas;
     private List<RevisionTecnica> listRevisiones;
+
 
 
     public Operador(String nombre, String documento, int edad) {
@@ -97,4 +99,10 @@ public List<Atraccion> getListAtraccionesGestionadas() {
     public void setListRevisiones(List<RevisionTecnica> listRevisiones) {
         this.listRevisiones = listRevisiones;
     }
+
+    public void setZonaAsignada(Zona zonaAsignada) {
+        this.zonaAsignada = zonaAsignada;
+    }
+    public Zona getZonaAsignada() { return zonaAsignada; }
 }
+

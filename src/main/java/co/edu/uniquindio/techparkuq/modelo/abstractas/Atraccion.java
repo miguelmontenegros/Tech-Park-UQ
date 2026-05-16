@@ -1,10 +1,11 @@
 package co.edu.uniquindio.techparkuq.modelo.abstractas;
 
+import co.edu.uniquindio.techparkuq.modelo.Visitante;
 import co.edu.uniquindio.techparkuq.modelo.enums.EstadoAtraccion;
 import co.edu.uniquindio.techparkuq.modelo.enums.AlertaClimatica;
 
 
-public abstract class Atraccion {
+public abstract class   Atraccion {
 
     private String idUnico;
     private String nombre;
@@ -17,7 +18,7 @@ public abstract class Atraccion {
     private EstadoAtraccion estado;
     private String motivoCierre;
 
-    /
+
     public Atraccion(String idUnico, String nombre, int capacidadMaximaCiclo, double alturaMinima,
                      int edadMinima, double costoAdicional) {
         this.idUnico = idUnico;
@@ -33,12 +34,17 @@ public abstract class Atraccion {
     }
 
 
-
     public boolean validarRestricciones(Visitante visitante) {
 
-        if (visitante.getEdad() < this.edadMinima) {return false;}
-        if (visitante.getEstatura() < this.alturaMinima) {return false;}
-        if (this.estado != EstadoAtraccion.ACTIVA){ return false;}
+        if (visitante.getEdad() < this.edadMinima) {
+            return false;
+        }
+        if (visitante.getEstatura() < this.alturaMinima) {
+            return false;
+        }
+        if (this.estado != EstadoAtraccion.ACTIVA) {
+            return false;
+        }
 
         return true;
     }
@@ -75,64 +81,88 @@ public abstract class Atraccion {
     public void registrarRevisionTecnica() {
         resetearContadorVisitantes();
         actualizarEstado(EstadoAtraccion.ACTIVA, "");
-        System.out.println(" Revisión técnica completada. Atracción " + this.nombre + " activa nuevamente.");
+        System.out.println("TÉCNICO: Revisión completada en " + this.nombre + ". Operativa nuevamente.");
     }
 
 
     public abstract void reaccionarAlClima(AlertaClimatica alerta);
 
 
-
-
     public String getIdUnico() {
-        return idUnico; }
+        return idUnico;
+    }
+
     public void setIdUnico(String idUnico) {
-        this.idUnico = idUnico; }
+        this.idUnico = idUnico;
+    }
 
     public String getNombre() {
-        return nombre; }
+        return nombre;
+    }
+
     public void setNombre(String nombre) {
-        this.nombre = nombre; }
+        this.nombre = nombre;
+    }
 
     public int getCapacidadMaximaCiclo() {
-        return capacidadMaximaCiclo; }
+        return capacidadMaximaCiclo;
+    }
+
     public void setCapacidadMaximaCiclo(int capacidadMaximaCiclo) {
-        this.capacidadMaximaCiclo = capacidadMaximaCiclo; }
+        this.capacidadMaximaCiclo = capacidadMaximaCiclo;
+    }
 
     public double getAlturaMinima() {
-        return alturaMinima; }
+        return alturaMinima;
+    }
+
     public void setAlturaMinima(double alturaMinima) {
-        this.alturaMinima = alturaMinima; }
+        this.alturaMinima = alturaMinima;
+    }
 
     public int getEdadMinima() {
-        return edadMinima; }
+        return edadMinima;
+    }
+
     public void setEdadMinima(int edadMinima) {
-        this.edadMinima = edadMinima; }
+        this.edadMinima = edadMinima;
+    }
 
     public double getCostoAdicional() {
-        return costoAdicional; }
-    public void setCostoAdicional(double costoAdicional) {
-        this.costoAdicional = costoAdicional; }
+        return costoAdicional;
+    }
 
-    public int getContadorVisitantesAcumulado() {
-        return contadorVisitantesAcumulado; }
-    public void setContadorVisitantesAcumulado(int contadorVisitantesAcumulado) {
-        this.contadorVisitantesAcumulado = contadorVisitantesAcumulado; }
+    public void setCostoAdicional(double costoAdicional) {
+        this.costoAdicional = costoAdicional;
+    }
+
+    public int getContadorUso() {
+        return contadorVisitantesAcumulado;
+    }
 
     public int getTiempoEsperaEstimado() {
-        return tiempoEsperaEstimado; }
+        return tiempoEsperaEstimado;
+    }
+
     public void setTiempoEsperaEstimado(int tiempoEsperaEstimado) {
-        this.tiempoEsperaEstimado = tiempoEsperaEstimado; }
+        this.tiempoEsperaEstimado = tiempoEsperaEstimado;
+    }
 
     public EstadoAtraccion getEstado() {
-        return estado; }
+        return estado;
+    }
+
     public void setEstado(EstadoAtraccion estado) {
-        this.estado = estado; }
+        this.estado = estado;
+    }
 
     public String getMotivoCierre() {
-        return motivoCierre; }
+        return motivoCierre;
+    }
+
     public void setMotivoCierre(String motivoCierre) {
-        this.motivoCierre = motivoCierre; }
+        this.motivoCierre = motivoCierre;
+    }
 
     @Override
     public String toString() {
@@ -147,3 +177,4 @@ public abstract class Atraccion {
                 ", estado=" + estado +
                 '}';
     }
+}
