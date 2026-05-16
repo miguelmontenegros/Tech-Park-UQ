@@ -1,6 +1,7 @@
 package co.edu.uniquindio.techparkuq.modelo;
 
 import co.edu.uniquindio.techparkuq.modelo.abstractas.Ticket;
+
 public class TicketFamiliar extends Ticket {
 private int numIntegrante;
     public TicketFamiliar(String idTicket, double precioBase, int numIntegrante){

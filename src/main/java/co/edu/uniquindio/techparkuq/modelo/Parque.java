@@ -84,6 +84,10 @@ public class Parque implements IGestionable {
         this.visitantesActivos = listaVisitantes;
     }
 
+    public List<Atraccion> getListaAtracciones() {
+        return obtenerTodasLasAtracciones();
+    }
+
     @Override
     public String toString() {
         return "Parque: " + nombre + " \n" +
@@ -94,29 +98,18 @@ public class Parque implements IGestionable {
 
 
     public boolean validarAcceso(Visitante v, Atraccion a) {
-        if (a.getEstadoAtraccion().name().equals("EN_MANTENIMIENTO")) {
-            System.out.println("Acceso denegado: " + a.getNombre() + " está en mantenimiento.");
+        if (!a.validarRestricciones(v)) {
+            System.out.println("Acceso denegado: El visitante no cumple requisitos o la atracción " + a.getNombre() + " no está activa.");
             return false;
         }
-
-        if (v.getEstatura() < a.getEstaturaMinima() || v.getEdad() < a.getEdadMinima()) {
-            System.out.println("Acceso denegado: No cumple requisitos de seguridad.");
-            return false;
-        }
-
         return true;
     }
 
     public void registrarUsoAtraccion(Visitante v, Atraccion a) {
         if (validarAcceso(v, a)) {
-            a.setContadorUso(a.getContadorUso() + 1);
-
+            a.registrarIngresoVisitante();
             v.registrarVisita(a.getNombre());
-
-            if (a.getContadorUso() >= 500) {
-                a.setEstadoAtraccion(EstadoAtraccion.EN_MANTENIMIENTO);
-                System.out.println("Alerta: " + a.getNombre() + " bloqueada por alcanzar 500 usos.");
-            }
+            System.out.println("Registro exitoso: " + v.getNombre() + " ingresó a " + a.getNombre());
         }
     }
 

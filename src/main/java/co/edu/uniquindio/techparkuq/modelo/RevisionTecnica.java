@@ -17,6 +17,7 @@ public class RevisionTecnica {
         this.fecha = fecha;
         this.observaciones = observaciones;
         this.exitosa = exitosa;
+    }
 
     public String getIdRevision() {
         return idRevision;
