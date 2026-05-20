@@ -1,4 +1,4 @@
-package co.edu.uniquindio.techparkuq.controller;
+package co.edu.uniquindio.techparkuq.controlador;
 
 import co.edu.uniquindio.techparkuq.modelo.Parque;
 
@@ -14,7 +14,7 @@ public class ModelFactoryController {
         return SingletonHolder.eINSTANCE;
     }
 
-    public ModelFactoryController() {
+    private ModelFactoryController() {
         parque = new Parque("Tech-Park UQ", 500);
         System.out.println("LOG: Parque inicializado en el ModelFactory");
     }

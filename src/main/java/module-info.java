@@ -11,4 +11,5 @@ module co.edu.uniquindio.techparkuq {
 
     opens co.edu.uniquindio.techparkuq to javafx.fxml;
     exports co.edu.uniquindio.techparkuq;
+    opens co.edu.uniquindio.techparkuq.controlador to javafx.fxml;
 }
