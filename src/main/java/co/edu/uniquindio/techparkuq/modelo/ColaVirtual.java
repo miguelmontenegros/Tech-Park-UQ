@@ -10,6 +10,7 @@ public class ColaVirtual {
 
 
     private List<Visitante> listEspera;
+    private static final int TIEMPO_POR_PERSONA = 5;
 
     public ColaVirtual() {
         this.listEspera = new LinkedList<>();
@@ -56,10 +57,8 @@ public class ColaVirtual {
 
     public int getTiempoEstimado() {
 
-        int tiempoPorPersona = 5;
-        return listEspera.size() * tiempoPorPersona;
+        return listEspera.size() * TIEMPO_POR_PERSONA;
     }
-
 
 
 

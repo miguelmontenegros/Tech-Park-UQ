@@ -17,6 +17,8 @@ public abstract class   Atraccion {
     private int tiempoEsperaEstimado;
     private EstadoAtraccion estado;
     private String motivoCierre;
+    private boolean activo;
+    private static final int LIMITE_VISITANTES_MANTENIMIENTO = 500;
 
 
     public Atraccion(String idUnico, String nombre, int capacidadMaximaCiclo, double alturaMinima,
@@ -31,6 +33,7 @@ public abstract class   Atraccion {
         this.tiempoEsperaEstimado = 0;
         this.estado = EstadoAtraccion.ACTIVA;
         this.motivoCierre = "";
+        this.activo = true;
     }
 
 
@@ -74,7 +77,7 @@ public abstract class   Atraccion {
 
 
     public boolean requiereMantenimiento() {
-        return this.contadorVisitantesAcumulado >= 500;
+        return this.contadorVisitantesAcumulado >= LIMITE_VISITANTES_MANTENIMIENTO;
     }
 
 
@@ -164,6 +167,10 @@ public abstract class   Atraccion {
         this.motivoCierre = motivoCierre;
     }
 
+    public boolean isActivo() { return activo; }
+
+    public void setActivo(boolean activo) { this.activo = activo; }
+
     @Override
     public String toString() {
         return "Atraccion{" +
@@ -177,4 +184,5 @@ public abstract class   Atraccion {
                 ", estado=" + estado +
                 '}';
     }
+
 }

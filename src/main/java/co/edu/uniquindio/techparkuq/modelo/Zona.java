@@ -1,5 +1,7 @@
 package co.edu.uniquindio.techparkuq.modelo;
 import co.edu.uniquindio.techparkuq.modelo.abstractas.Atraccion;
+import co.edu.uniquindio.techparkuq.modelo.enums.EstadoAtraccion;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,10 +45,11 @@ public class Zona {
         return null;
     }
 
-    public boolean eliminarAtraccion(String nombreAtraccion) {
-        for (int i = 0; i < listaAtracciones.size(); i++) {
-            if (listaAtracciones.get(i).getNombre().equalsIgnoreCase(nombreAtraccion)) {
-                listaAtracciones.remove(i);
+    public boolean eliminarAtraccion(String idUnico) {
+        for (Atraccion a : listaAtracciones) {
+            if (a.getIdUnico().equals(idUnico)) {
+                a.setActivo(false);
+                a.actualizarEstado(EstadoAtraccion.CERRADA, "Atracción deshabilitada por el administrador.");
                 return true;
             }
         }

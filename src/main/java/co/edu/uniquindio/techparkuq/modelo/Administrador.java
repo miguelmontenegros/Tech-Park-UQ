@@ -1,5 +1,6 @@
 package co.edu.uniquindio.techparkuq.modelo;
 import co.edu.uniquindio.techparkuq.modelo.abstractas.Empleado;
+import co.edu.uniquindio.techparkuq.modelo.enums.AlertaClimatica;
 import co.edu.uniquindio.techparkuq.modelo.interfaces.IGestionable;
 import co.edu.uniquindio.techparkuq.modelo.abstractas.Atraccion;
 
@@ -36,16 +37,16 @@ public class Administrador extends Empleado implements IGestionable {
 
 
     @Override
-    public void crearAtraccion(Atraccion atraccion) {
+    public void crearAtraccion(Atraccion atraccion, String nombreZona) {
         if (atraccion != null && parque != null) {
-            parque.crearAtraccion(atraccion);
+            parque.crearAtraccion(atraccion, nombreZona);
         }
     }
 
     @Override
-    public void eliminarAtraccion(String nombre) {
-        if (parque != null && nombre != null) {
-            parque.eliminarAtraccion(nombre);
+    public void eliminarAtraccion(String idUnico) {
+        if (parque != null && idUnico != null) {
+            parque.eliminarAtraccion(idUnico);
         }
     }
 

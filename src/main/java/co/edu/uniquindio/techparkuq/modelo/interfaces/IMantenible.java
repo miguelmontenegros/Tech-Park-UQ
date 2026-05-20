@@ -4,4 +4,5 @@ public interface IMantenible {
     void realizarMantenimiento();
     boolean necesitaRevision();
     int getContadorUso();
+    void registrarRevisionTecnica();
 }
