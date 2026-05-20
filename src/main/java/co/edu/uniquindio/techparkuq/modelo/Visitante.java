@@ -107,10 +107,6 @@ public Visitante(String nombre, String documento, int edad, double estatura, Str
         return historialVisitas;
     }
 
-    public void setHistorialVisitas(List<String> historialVisitas) {
-        this.historialVisitas = historialVisitas;
-    }
-
     public List<Atraccion> getListaFavoritos() {
         return listaFavoritos;
     }

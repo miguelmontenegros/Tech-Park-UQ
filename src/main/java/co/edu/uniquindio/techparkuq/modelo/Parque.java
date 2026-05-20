@@ -88,6 +88,8 @@ public class Parque implements IGestionable {
         return obtenerTodasLasAtracciones();
     }
 
+    public double getIngresosDiarios() { return ingresosDiarios; }
+
     @Override
     public String toString() {
         return "Parque: " + nombre + " \n" +
@@ -141,8 +143,8 @@ public class Parque implements IGestionable {
         return null;
     }
 
-    public void cambiarEstadoClima(AlertaClimatica nuevaAlerta) {
 
+    public void cambiarEstadoClima(AlertaClimatica nuevaAlerta) {
         this.estadoClima = nuevaAlerta;
         System.out.println("\nSISTEMA CLIMA: Alerta cambiada a " + nuevaAlerta);
         for (Zona zona : listaZonas) {
@@ -152,25 +154,26 @@ public class Parque implements IGestionable {
         }
     }
 
+    @Override
+    public void eliminarAtraccion(String idUnico) {
+        if (idUnico == null) return;
 
-        @Override
-
-        public void eliminarAtraccion(String nombreAtraccion) {
-
-            for (Zona zona : listaZonas) {
-                List<Atraccion> lista = zona.getListaAtracciones();
-
-                for (int i = lista.size() - 1; i >= 0; i--) {
-
-                    if (lista.get(i).getNombre().equalsIgnoreCase(nombreAtraccion)) {
-                        lista.remove(i);
-                        System.out.println("Atracción eliminada con éxito.");
-                    }
+        boolean encontrada = false;
+        for (Zona zona : listaZonas) {
+            for (Atraccion atr : zona.getListaAtracciones()) {
+                if (atr.getIdUnico().equals(idUnico)) {
+                    atr.setEstado(EstadoAtraccion.CERRADA);
+                    atr.setMotivoCierre("Atracción deshabilitada por administración.");
+                    encontrada = true;
+                    break;
                 }
             }
+            if (encontrada) break;
         }
-    @Override
+        System.out.println("LOG: Proceso de eliminación finalizado para ID: " + idUnico);
+    }
 
+    @Override
     public void crearZona(Zona zona) {
         if (zona != null) {
             listaZonas.add(zona);
@@ -179,19 +182,25 @@ public class Parque implements IGestionable {
     }
 
     @Override
-
-    public void crearAtraccion(Atraccion atraccion) {
+    public void crearAtraccion(Atraccion atraccion, String nombreZona) {
         if (atraccion == null) {
-            System.out.println(" Error: Atracción nula.");
+            System.out.println("Error: Atracción nula.");
             return;
         }
 
-        if (listaZonas.isEmpty()) {
-            System.out.println("Error: No hay zonas creadas para asignar la atracción.");
-            return;
+        Zona zonaDestino = null;
+        for (Zona z : listaZonas) {
+            if (z.getNombre().equalsIgnoreCase(nombreZona)) {
+                zonaDestino = z;
+                break;
+            }
         }
 
-        listaZonas.get(0).agregarAtraccion(atraccion);
-        System.out.println("Atracción '" + atraccion.getNombre() + "' registrada con éxito.");
+        if (zonaDestino != null) {
+            zonaDestino.agregarAtraccion(atraccion);
+            System.out.println("Atracción '" + atraccion.getNombre() + "' registrada con éxito en la zona: " + nombreZona);
+        } else {
+            System.out.println("Error: La zona '" + nombreZona + "' no existe. No se pudo asignar la atracción.");
+        }
     }
-    }
+}
