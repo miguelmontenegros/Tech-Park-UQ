@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" style="-fx-background-color: #f4f4f9;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.techparkuq.controlador.VentanaPrincipalController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" style="-fx-background-color: #f4f4f9;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.techparkuq.controlador.VentanaPrincipalController">
 
     <top>
         <AnchorPane prefHeight="80.0" prefWidth="900.0" style="-fx-background-color: #1e293b;" BorderPane.alignment="CENTER">
@@ -23,7 +23,7 @@
     </top>
 
     <left>
-        <VBox prefHeight="520.0" prefWidth="240.0" spacing="15.0" style="-fx-background-color: #0f172a;" BorderPane.alignment="CENTER">
+        <VBox prefHeight="520.0" prefWidth="240.0" spacing="15.0" style="-fx-background-color: #D8E9FF;" BorderPane.alignment="CENTER">
             <children>
                 <Label text="OPERACIONES" textFill="#94a3b8">
                     <font>
