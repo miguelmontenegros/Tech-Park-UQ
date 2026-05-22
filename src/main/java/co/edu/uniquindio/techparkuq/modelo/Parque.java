@@ -1,5 +1,7 @@
 package co.edu.uniquindio.techparkuq.modelo;
+
 import co.edu.uniquindio.techparkuq.modelo.abstractas.Atraccion;
+import co.edu.uniquindio.techparkuq.modelo.AtraccionShow;
 import co.edu.uniquindio.techparkuq.modelo.abstractas.Empleado;
 import co.edu.uniquindio.techparkuq.modelo.enums.EstadoAtraccion;
 import co.edu.uniquindio.techparkuq.modelo.interfaces.IGestionable;
@@ -84,6 +86,12 @@ public class Parque implements IGestionable {
         this.visitantesActivos = listaVisitantes;
     }
 
+    public List<Atraccion> getListaAtracciones() {
+        return obtenerTodasLasAtracciones();
+    }
+
+    public double getIngresosDiarios() { return ingresosDiarios; }
+
     @Override
     public String toString() {
         return "Parque: " + nombre + " \n" +
@@ -94,29 +102,18 @@ public class Parque implements IGestionable {
 
 
     public boolean validarAcceso(Visitante v, Atraccion a) {
-        if (a.getEstadoAtraccion().name().equals("EN_MANTENIMIENTO")) {
-            System.out.println("Acceso denegado: " + a.getNombre() + " está en mantenimiento.");
+        if (!a.validarRestricciones(v)) {
+            System.out.println("Acceso denegado: El visitante no cumple requisitos o la atracción " + a.getNombre() + " no está activa.");
             return false;
         }
-
-        if (v.getEstatura() < a.getEstaturaMinima() || v.getEdad() < a.getEdadMinima()) {
-            System.out.println("Acceso denegado: No cumple requisitos de seguridad.");
-            return false;
-        }
-
         return true;
     }
 
     public void registrarUsoAtraccion(Visitante v, Atraccion a) {
         if (validarAcceso(v, a)) {
-            a.setContadorUso(a.getContadorUso() + 1);
-
+            a.registrarIngresoVisitante();
             v.registrarVisita(a.getNombre());
-
-            if (a.getContadorUso() >= 500) {
-                a.setEstadoAtraccion(EstadoAtraccion.EN_MANTENIMIENTO);
-                System.out.println("Alerta: " + a.getNombre() + " bloqueada por alcanzar 500 usos.");
-            }
+            System.out.println("Registro exitoso: " + v.getNombre() + " ingresó a " + a.getNombre());
         }
     }
 
@@ -148,8 +145,8 @@ public class Parque implements IGestionable {
         return null;
     }
 
-    public void cambiarEstadoClima(AlertaClimatica nuevaAlerta) {
 
+    public void cambiarEstadoClima(AlertaClimatica nuevaAlerta) {
         this.estadoClima = nuevaAlerta;
         System.out.println("\nSISTEMA CLIMA: Alerta cambiada a " + nuevaAlerta);
         for (Zona zona : listaZonas) {
@@ -157,27 +154,57 @@ public class Parque implements IGestionable {
                 atr.reaccionarAlClima(nuevaAlerta);
             }
         }
+        if (nuevaAlerta != AlertaClimatica.NINGUNA) {
+            String msg = "Alerta climática activa: " + nuevaAlerta
+                    + ". Algunas atracciones pueden estar cerradas por seguridad.";
+            notificarVisitantes(msg);
+        } else {
+            notificarVisitantes("Clima normalizado. Todas las atracciones disponibles han vuelto a operar.");
+        }
     }
 
+    public void notificarVisitantes(String mensaje) {
+        for (Visitante v : visitantesActivos) {
+            if (v.getTicket() != null && v.getTicket().isActivo()) {
+                v.recibirNotificacion(mensaje);
+                v.agregarNotificacion(mensaje);
+            }
+        }
+    }
 
-        @Override
-
-        public void eliminarAtraccion(String nombreAtraccion) {
-
-            for (Zona zona : listaZonas) {
-                List<Atraccion> lista = zona.getListaAtracciones();
-
-                for (int i = lista.size() - 1; i >= 0; i--) {
-
-                    if (lista.get(i).getNombre().equalsIgnoreCase(nombreAtraccion)) {
-                        lista.remove(i);
-                        System.out.println("Atracción eliminada con éxito.");
-                    }
+    public void notificarInicioShow(AtraccionShow show) {
+        String msg = "¡El show '" + show.getNombre() + "' comenzará pronto! Horario: " + show.getHorarioFuncion();
+        for (Visitante v : visitantesActivos) {
+            if (v.getTicket() != null && v.getTicket().isActivo()) {
+                boolean esFavorito = v.getListaFavoritos().contains(show);
+                if (esFavorito) {
+                    v.recibirNotificacion(msg);
+                    v.agregarNotificacion(msg);
                 }
             }
         }
-    @Override
+    }
 
+    @Override
+    public void eliminarAtraccion(String idUnico) {
+        if (idUnico == null) return;
+
+        boolean encontrada = false;
+        for (Zona zona : listaZonas) {
+            for (Atraccion atr : zona.getListaAtracciones()) {
+                if (atr.getIdUnico().equals(idUnico)) {
+                    atr.setEstado(EstadoAtraccion.CERRADA);
+                    atr.setMotivoCierre("Atracción deshabilitada por administración.");
+                    encontrada = true;
+                    break;
+                }
+            }
+            if (encontrada) break;
+        }
+        System.out.println("LOG: Proceso de eliminación finalizado para ID: " + idUnico);
+    }
+
+    @Override
     public void crearZona(Zona zona) {
         if (zona != null) {
             listaZonas.add(zona);
@@ -186,19 +213,25 @@ public class Parque implements IGestionable {
     }
 
     @Override
-
-    public void crearAtraccion(Atraccion atraccion) {
+    public void crearAtraccion(Atraccion atraccion, String nombreZona) {
         if (atraccion == null) {
-            System.out.println(" Error: Atracción nula.");
+            System.out.println("Error: Atracción nula.");
             return;
         }
 
-        if (listaZonas.isEmpty()) {
-            System.out.println("Error: No hay zonas creadas para asignar la atracción.");
-            return;
+        Zona zonaDestino = null;
+        for (Zona z : listaZonas) {
+            if (z.getNombre().equalsIgnoreCase(nombreZona)) {
+                zonaDestino = z;
+                break;
+            }
         }
 
-        listaZonas.get(0).agregarAtraccion(atraccion);
-        System.out.println("Atracción '" + atraccion.getNombre() + "' registrada con éxito.");
+        if (zonaDestino != null) {
+            zonaDestino.agregarAtraccion(atraccion);
+            System.out.println("Atracción '" + atraccion.getNombre() + "' registrada con éxito en la zona: " + nombreZona);
+        } else {
+            System.out.println("Error: La zona '" + nombreZona + "' no existe. No se pudo asignar la atracción.");
+        }
     }
-    }
+}

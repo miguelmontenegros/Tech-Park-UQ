@@ -1,10 +1,12 @@
 package co.edu.uniquindio.techparkuq.modelo.abstractas;
 
+import co.edu.uniquindio.techparkuq.modelo.Visitante;
+import co.edu.uniquindio.techparkuq.modelo.ColaVirtual;
 import co.edu.uniquindio.techparkuq.modelo.enums.EstadoAtraccion;
 import co.edu.uniquindio.techparkuq.modelo.enums.AlertaClimatica;
 
 
-public abstract class Atraccion {
+public abstract class   Atraccion {
 
     private String idUnico;
     private String nombre;
@@ -16,9 +18,10 @@ public abstract class Atraccion {
     private int tiempoEsperaEstimado;
     private EstadoAtraccion estado;
     private String motivoCierre;
+    private boolean activo;
+    private ColaVirtual colaVirtual;
+    private static final int LIMITE_VISITANTES_MANTENIMIENTO = 500;
 
-    public Atraccion() {
-    }
 
     public Atraccion(String idUnico, String nombre, int capacidadMaximaCiclo, double alturaMinima,
                      int edadMinima, double costoAdicional) {
@@ -32,6 +35,8 @@ public abstract class Atraccion {
         this.tiempoEsperaEstimado = 0;
         this.estado = EstadoAtraccion.ACTIVA;
         this.motivoCierre = "";
+        this.activo = true;
+        this.colaVirtual = new ColaVirtual();
     }
 
 
@@ -75,14 +80,14 @@ public abstract class Atraccion {
 
 
     public boolean requiereMantenimiento() {
-        return this.contadorVisitantesAcumulado >= 500;
+        return this.contadorVisitantesAcumulado >= LIMITE_VISITANTES_MANTENIMIENTO;
     }
 
 
     public void registrarRevisionTecnica() {
         resetearContadorVisitantes();
         actualizarEstado(EstadoAtraccion.ACTIVA, "");
-        System.out.println(" Revisión técnica completada. Atracción " + this.nombre + " activa nuevamente.");
+        System.out.println("TÉCNICO: Revisión completada en " + this.nombre + ". Operativa nuevamente.");
     }
 
 
@@ -137,16 +142,19 @@ public abstract class Atraccion {
         this.costoAdicional = costoAdicional;
     }
 
-    public int getContadorVisitantesAcumulado() {
+    public int getContadorUso() {
         return contadorVisitantesAcumulado;
     }
 
-    public void setContadorVisitantesAcumulado(int contadorVisitantesAcumulado) {
-        this.contadorVisitantesAcumulado = contadorVisitantesAcumulado;
+    public int getTiempoEsperaEstimado() {
+        return colaVirtual != null ? colaVirtual.getTiempoEstimado() : tiempoEsperaEstimado;
     }
 
-    public int getTiempoEsperaEstimado() {
-        return tiempoEsperaEstimado;
+    public int getTiempoEsperaParaVisitante(Visitante visitante) {
+        if (colaVirtual == null || visitante == null) return 0;
+        int posicion = colaVirtual.getListEspera().indexOf(visitante);
+        if (posicion == -1) return 0;
+        return (posicion + 1) * 5;
     }
 
     public void setTiempoEsperaEstimado(int tiempoEsperaEstimado) {
@@ -168,6 +176,12 @@ public abstract class Atraccion {
     public void setMotivoCierre(String motivoCierre) {
         this.motivoCierre = motivoCierre;
     }
+
+    public boolean isActivo() { return activo; }
+
+    public void setActivo(boolean activo) { this.activo = activo; }
+
+    public ColaVirtual getColaVirtual() { return colaVirtual; }
 
     @Override
     public String toString() {
