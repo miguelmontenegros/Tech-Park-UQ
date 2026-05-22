@@ -77,16 +77,11 @@
     </left>
 
     <center>
-        <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #ffffff;" BorderPane.alignment="CENTER">
+        <AnchorPane fx:id="panelPrincipal" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #ffffff;" BorderPane.alignment="CENTER">
             <children>
                 <Label layoutX="40.0" layoutY="40.0" text="Bienvenido al Sistema de Gestión" textFill="#1e293b">
                     <font>
                         <Font name="System Bold" size="18.0" />
-                    </font>
-                </Label>
-                <Label layoutX="40.0" layoutY="75.0" text="Seleccione una opción del menú izquierdo para comenzar a operar el parque." textFill="#64748b">
-                    <font>
-                        <Font size="14.0" />
                     </font>
                 </Label>
             </children>

@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.paint.Color?>
+<?import javafx.scene.paint.RadialGradient?>
+<?import javafx.scene.paint.Stop?>
+
+<BorderPane prefHeight="580" prefWidth="760" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.techparkuq.controlador.PanelVisitanteController">
+
+    <!-- HEADER -->
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="20" style="-fx-background-color: #00542E; -fx-padding: 14;">
+            <Label style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: white;" text="Portal del Visitante — Tech-Park UQ" />
+            <Region HBox.hgrow="ALWAYS" />
+            <Label fx:id="lblNombreVisitante" style="-fx-text-fill: #FFE0B2; -fx-font-size: 13;" text="Visitante" />
+            <Button onAction="#onVerNotificaciones" style="-fx-background-color: #E65100; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 12;" text="🔔 Notificaciones" />
+            <Button onAction="#onVolverLogin" style="-fx-background-color: #c62828; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 12;" text="← Volver" />
+        </HBox>
+    </top>
+
+    <center>
+        <TabPane style="-fx-background-color: #f5f5f5;" tabClosingPolicy="UNAVAILABLE">
+
+            <!-- ===== TAB 1: MI PERFIL ===== -->
+            <Tab text="Mi Perfil">
+                <VBox spacing="12" style="-fx-padding: 20;">
+                    <Label style="-fx-font-size: 15; -fx-font-weight: bold;" text="Datos del Visitante" />
+
+                    <HBox spacing="15">
+                        <VBox spacing="6">
+                            <Label text="Nombre completo:" />
+                            <TextField fx:id="txtNombre" prefWidth="220" promptText="Nombre" />
+                        </VBox>
+                        <VBox spacing="6">
+                            <Label text="Documento:" />
+                            <TextField fx:id="txtDocumento" prefWidth="150" promptText="Documento" />
+                        </VBox>
+                    </HBox>
+                    <HBox spacing="15">
+                        <VBox spacing="6">
+                            <Label text="Edad:" />
+                            <TextField fx:id="txtEdad" prefWidth="80" promptText="Edad" />
+                        </VBox>
+                        <VBox spacing="6">
+                            <Label text="Estatura (m):" />
+                            <TextField fx:id="txtEstatura" prefWidth="110" promptText="Ej: 1.70" />
+                        </VBox>
+                    </HBox>
+
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                        <Label style="-fx-font-weight: bold; -fx-font-size: 14;" text="Saldo virtual: $" />
+                        <Label fx:id="lblSaldo" style="-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #00542E;" text="0.00">
+                            <textFill>
+                                <RadialGradient centerX="0.5" centerY="0.5" radius="0.5">
+                                    <stops>
+                                        <Stop>
+                                            <color>
+                                                <Color />
+                                            </color>
+                                        </Stop>
+                                        <Stop offset="1.0">
+                                            <color>
+                                                <Color red="1.0" green="1.0" blue="1.0" />
+                                            </color>
+                                        </Stop>
+                                    </stops>
+                                </RadialGradient>
+                            </textFill></Label>
+                    </HBox>
+
+                    <Button onAction="#onGuardarPerfil" style="-fx-background-color: #E65100; -fx-text-fill: white; -fx-font-weight: bold;" text="Guardar Perfil" />
+
+                    <Separator />
+
+                    <Label style="-fx-font-weight: bold;" text="Recargar Saldo Virtual:" />
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                        <TextField fx:id="txtMontoCarga" prefWidth="200" promptText="Monto a recargar ($)" />
+                        <Button onAction="#onRecargarSaldo" style="-fx-background-color: #00542E; -fx-text-fill: white;" text="Recargar" />
+                    </HBox>
+
+                    <Separator />
+
+                    <Label style="-fx-font-weight: bold;" text="Mi Ticket activo:" />
+                    <Label fx:id="lblTicketInfo" style="-fx-text-fill: #666; -fx-font-size: 13;" text="Sin ticket activo." />
+                </VBox>
+            </Tab>
+
+            <!-- ===== TAB 2: COMPRAR TICKET ===== -->
+            <Tab text="Comprar Ticket">
+                <VBox spacing="14" style="-fx-padding: 22;">
+                    <Label style="-fx-font-size: 15; -fx-font-weight: bold;" text="Adquirir Entrada" />
+
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                        <Label prefWidth="130" text="Tipo de ticket:" />
+                        <ComboBox fx:id="cmbTipoTicket" onAction="#onSeleccionarTicket" prefWidth="200" />
+                    </HBox>
+
+                    <!-- Panel de integrantes — visible solo si tipo = Familiar -->
+                    <HBox fx:id="panelFamiliar" alignment="CENTER_LEFT" managed="false" spacing="10" visible="false">
+                        <Label prefWidth="130" text="N° integrantes:" />
+                        <TextField fx:id="txtNumIntegrantes" prefWidth="80" promptText="Ej: 4" />
+                    </HBox>
+
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                        <Label prefWidth="130" text="Precio base ($):" />
+                        <TextField fx:id="txtPrecioBase" prefWidth="130" promptText="Ej: 25000" />
+                    </HBox>
+
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                        <Label prefWidth="130" text="Costo final:" />
+                        <Label fx:id="lblCostoFinal" style="-fx-font-size: 15; -fx-font-weight: bold; -fx-text-fill: #E65100;" text="—" />
+                    </HBox>
+
+                    <Button onAction="#onComprarTicket" prefWidth="230" style="-fx-background-color: #E65100; -fx-text-fill: white; -fx-font-weight: bold;" text="Calcular y Comprar Ticket" />
+                    <Label fx:id="lblResultadoTicket" style="-fx-text-fill: #2E7D32; -fx-font-weight: bold;" text="" />
+                </VBox>
+            </Tab>
+
+            <!-- ===== TAB 3: ATRACCIONES ===== -->
+            <Tab text="Atracciones">
+                <VBox spacing="10" style="-fx-padding: 14;">
+                    <Label style="-fx-font-size: 14; -fx-font-weight: bold;" text="Atracciones disponibles en el parque" />
+                    <TableView fx:id="tblAtracciones" VBox.vgrow="ALWAYS">
+                        <columns>
+                            <TableColumn fx:id="colVisNombre" prefWidth="185" text="Atracción" />
+                            <TableColumn fx:id="colVisTipo" prefWidth="120" text="Tipo" />
+                            <TableColumn fx:id="colVisEstado" prefWidth="120" text="Estado" />
+                            <TableColumn fx:id="colVisEspera" prefWidth="110" text="Espera (min)" />
+                            <TableColumn fx:id="colVisCosto" prefWidth="120" text="Costo Adicional" />
+                            <TableColumn fx:id="colVisAlt" prefWidth="100" text="Alt. Mín (m)" />
+                        </columns>
+                    </TableView>
+                    <HBox spacing="10">
+                        <Button onAction="#onAgregarFavorito" style="-fx-background-color: #E6DE12; -fx-text-fill: white;" text="★ Agregar a Favoritos" />
+                        <Button onAction="#onRefrescarAtracciones" style="-fx-background-color: #00542E; -fx-text-fill: white;" text="🔄 Actualizar tiempos" />
+                    </HBox>
+                </VBox>
+            </Tab>
+
+            <!-- ===== TAB 4: MIS FAVORITOS ===== -->
+            <Tab text="Mis Favoritos">
+                <VBox spacing="10" style="-fx-padding: 14;">
+                    <Label style="-fx-font-size: 14; -fx-font-weight: bold;" text="Mis Atracciones Favoritas" />
+                    <TableView fx:id="tblFavoritos" VBox.vgrow="ALWAYS">
+                        <columns>
+                            <TableColumn fx:id="colFavNombre" prefWidth="220" text="Atracción" />
+                            <TableColumn fx:id="colFavTipo" prefWidth="160" text="Tipo" />
+                            <TableColumn fx:id="colFavEstado" prefWidth="140" text="Estado" />
+                        </columns>
+                    </TableView>
+                    <HBox spacing="10">
+                        <Button onAction="#onEliminarFavorito" style="-fx-background-color: #c62828; -fx-text-fill: white;" text="Eliminar de Favoritos" />
+                        <Button onAction="#onRefrescarFavoritos" style="-fx-background-color: #00542E; -fx-text-fill: white;" text="Actualizar" />
+                    </HBox>
+                </VBox>
+            </Tab>
+
+        </TabPane>
+    </center>
+</BorderPane>
