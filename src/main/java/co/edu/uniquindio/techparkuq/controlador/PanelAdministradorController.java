@@ -1,0 +1,435 @@
+package co.edu.uniquindio.techparkuq.controlador;
+
+import co.edu.uniquindio.techparkuq.modelo.*;
+import co.edu.uniquindio.techparkuq.modelo.abstractas.Atraccion;
+import co.edu.uniquindio.techparkuq.modelo.abstractas.Empleado;
+import co.edu.uniquindio.techparkuq.modelo.enums.AlertaClimatica;
+import co.edu.uniquindio.techparkuq.modelo.enums.EstadoAtraccion;
+import co.edu.uniquindio.techparkuq.modelo.enums.TipoAtraccion;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.util.StringConverter;
+
+public class PanelAdministradorController {
+
+    private final Parque parque = ModelFactoryController.getInstance().getParque();
+
+    @FXML private TableView<Empleado>           tblEmpleados;
+    @FXML private TableColumn<Empleado, String>  colEmpNombre;
+    @FXML private TableColumn<Empleado, String>  colEmpDocumento;
+    @FXML private TableColumn<Empleado, Integer> colEmpEdad;
+    @FXML private TableColumn<Empleado, String>  colEmpRol;
+    @FXML private TableColumn<Empleado, String>  colEmpZona;
+    @FXML private TextField txtEmpNombre;
+    @FXML private TextField txtEmpDocumento;
+    @FXML private TextField txtEmpEdad;
+
+    @FXML private TableView<Zona>             tblZonas;
+    @FXML private TableColumn<Zona, String>   colZonaNombre;
+    @FXML private TableColumn<Zona, Integer>  colZonaCapacidad;
+    @FXML private TableColumn<Zona, Integer>  colZonaNumAtr;
+    @FXML private TableColumn<Zona, Integer>  colZonaNumOp;
+    @FXML private TextField txtZonaNombre;
+    @FXML private TextField txtZonaCapacidad;
+
+    @FXML private TableView<Atraccion>           tblAtracciones;
+    @FXML private TableColumn<Atraccion, String>  colAtrId;
+    @FXML private TableColumn<Atraccion, String>  colAtrNombre;
+    @FXML private TableColumn<Atraccion, String>  colAtrTipo;
+    @FXML private TableColumn<Atraccion, String>  colAtrZona;
+    @FXML private TableColumn<Atraccion, String>  colAtrEstado;
+    @FXML private TableColumn<Atraccion, Integer> colAtrContador;
+    @FXML private TextField          txtAtrId;
+    @FXML private TextField          txtAtrNombre;
+    @FXML private ComboBox<TipoAtraccion> cmbAtrTipo;
+    @FXML private ComboBox<String>        cmbAtrZona;
+    @FXML private TextField          txtAtrCapacidad;
+    @FXML private TextField          txtAtrAlturaMin;
+    @FXML private TextField          txtAtrEdadMin;
+    @FXML private TextField          txtAtrCosto;
+
+    @FXML private ComboBox<Operador>          cmbAsigOperador;
+    @FXML private ComboBox<Zona>              cmbAsigZona;
+    @FXML private TableView<Operador>         tblAsignaciones;
+    @FXML private TableColumn<Operador, String> colAsigOperador;
+    @FXML private TableColumn<Operador, String> colAsigDoc;
+    @FXML private TableColumn<Operador, String> colAsigZona;
+
+    @FXML private Label              lblEstadoClima;
+    @FXML private ComboBox<AlertaClimatica> cmbClima;
+    @FXML private TextArea           areaReporte;
+
+
+    @FXML
+    void initialize() {
+        configurarTablaEmpleados();
+        configurarTablaZonas();
+        configurarTablaAtracciones();
+        configurarTablaAsignaciones();
+        configurarCombos();
+        cargarTodos();
+    }
+
+
+    private void configurarTablaEmpleados() {
+        colEmpNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
+        colEmpDocumento.setCellValueFactory(new PropertyValueFactory<>("documento"));
+        colEmpEdad.setCellValueFactory(new PropertyValueFactory<>("edad"));
+        colEmpRol.setCellValueFactory(new PropertyValueFactory<>("rol"));
+        colEmpZona.setCellValueFactory(c -> {
+            Empleado e = c.getValue();
+            if (e instanceof Operador op) {
+                Zona z = op.getZonaAsignada();
+                return new SimpleStringProperty(z != null ? z.getNombre() : "Sin asignar");
+            }
+            return new SimpleStringProperty("—");
+        });
+    }
+
+    private void configurarTablaZonas() {
+        colZonaNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
+        colZonaCapacidad.setCellValueFactory(new PropertyValueFactory<>("capacidadMaxima"));
+        colZonaNumAtr.setCellValueFactory(c ->
+                new SimpleIntegerProperty(c.getValue().getListaAtracciones().size()).asObject());
+        colZonaNumOp.setCellValueFactory(c ->
+                new SimpleIntegerProperty(c.getValue().getListOperadores().size()).asObject());
+    }
+
+    private void configurarTablaAtracciones() {
+        colAtrId.setCellValueFactory(new PropertyValueFactory<>("idUnico"));
+        colAtrNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
+        colAtrTipo.setCellValueFactory(c ->
+                new SimpleStringProperty(c.getValue().getClass().getSimpleName()));
+        colAtrZona.setCellValueFactory(c ->
+                new SimpleStringProperty(encontrarZonaDe(c.getValue())));
+        colAtrEstado.setCellValueFactory(c ->
+                new SimpleStringProperty(c.getValue().getEstado().toString()));
+        colAtrContador.setCellValueFactory(new PropertyValueFactory<>("contadorUso"));
+    }
+
+    private void configurarTablaAsignaciones() {
+        colAsigOperador.setCellValueFactory(new PropertyValueFactory<>("nombre"));
+        colAsigDoc.setCellValueFactory(new PropertyValueFactory<>("documento"));
+        colAsigZona.setCellValueFactory(c -> {
+            Zona z = c.getValue().getZonaAsignada();
+            return new SimpleStringProperty(z != null ? z.getNombre() : "Sin asignar");
+        });
+    }
+
+    private void configurarCombos() {
+        cmbAtrTipo.setItems(FXCollections.observableArrayList(TipoAtraccion.values()));
+        cmbClima.setItems(FXCollections.observableArrayList(AlertaClimatica.values()));
+
+        cmbAsigOperador.setConverter(new StringConverter<>() {
+            @Override public String toString(Operador op) {
+                return op != null ? op.getNombre() + " (" + op.getDocumento() + ")" : "";
+            }
+            @Override public Operador fromString(String s) { return null; }
+        });
+
+        cmbAsigZona.setConverter(new StringConverter<>() {
+            @Override public String toString(Zona z) { return z != null ? z.getNombre() : ""; }
+            @Override public Zona fromString(String s) { return null; }
+        });
+
+        actualizarCombosZona();
+        actualizarCombosOperador();
+    }
+
+
+    private void cargarTodos() {
+        cargarEmpleados();
+        cargarZonas();
+        cargarAtracciones();
+        cargarAsignaciones();
+        actualizarEtiquetaClima();
+    }
+
+    private void cargarEmpleados() {
+        tblEmpleados.setItems(FXCollections.observableArrayList(parque.getListaEmpleados()));
+    }
+
+    private void cargarZonas() {
+        tblZonas.setItems(FXCollections.observableArrayList(parque.getListaZonas()));
+        actualizarCombosZona();
+    }
+
+    private void cargarAtracciones() {
+        tblAtracciones.setItems(FXCollections.observableArrayList(parque.getListaAtracciones()));
+        actualizarCombosZona();
+    }
+
+    private void cargarAsignaciones() {
+        ObservableList<Operador> ops = FXCollections.observableArrayList();
+        for (Empleado e : parque.getListaEmpleados()) {
+            if (e instanceof Operador op) ops.add(op);
+        }
+        tblAsignaciones.setItems(ops);
+        actualizarCombosOperador();
+    }
+
+    private void actualizarCombosZona() {
+        ObservableList<String> nombres = FXCollections.observableArrayList();
+        for (Zona z : parque.getListaZonas()) nombres.add(z.getNombre());
+        cmbAtrZona.setItems(nombres);
+        cmbAsigZona.setItems(FXCollections.observableArrayList(parque.getListaZonas()));
+    }
+
+    private void actualizarCombosOperador() {
+        ObservableList<Operador> ops = FXCollections.observableArrayList();
+        for (Empleado e : parque.getListaEmpleados()) {
+            if (e instanceof Operador op) ops.add(op);
+        }
+        cmbAsigOperador.setItems(ops);
+    }
+
+    private void actualizarEtiquetaClima() {
+        AlertaClimatica clima = parque.getEstadoClima();
+        lblEstadoClima.setText(clima.toString());
+        lblEstadoClima.setStyle(switch (clima) {
+            case NINGUNA            -> "-fx-font-weight: bold; -fx-text-fill: #2E7D32; -fx-font-size: 14;";
+            case LLUVIA_FUERTE      -> "-fx-font-weight: bold; -fx-text-fill: #1565C0; -fx-font-size: 14;";
+            case TORMENTA_ELECTRICA -> "-fx-font-weight: bold; -fx-text-fill: #c62828; -fx-font-size: 14;";
+        });
+    }
+
+
+
+    @FXML
+    void onContratarEmpleado(ActionEvent event) {
+        String nombre = txtEmpNombre.getText().trim();
+        String doc    = txtEmpDocumento.getText().trim();
+        String edadStr = txtEmpEdad.getText().trim();
+
+        if (nombre.isEmpty() || doc.isEmpty() || edadStr.isEmpty()) {
+            alerta("Campos incompletos", "Complete todos los campos del formulario.");
+            return;
+        }
+        try {
+            int edad = Integer.parseInt(edadStr);
+            parque.contratarEmpleado(new Operador(nombre, doc, edad));
+            cargarEmpleados();
+            limpiarFormEmp();
+            info("Operador contratado", nombre + " registrado en el sistema.");
+        } catch (NumberFormatException ex) {
+            alerta("Error", "La edad debe ser un número entero.");
+        }
+    }
+
+    @FXML
+    void onDesvincularEmpleado(ActionEvent event) {
+        Empleado sel = tblEmpleados.getSelectionModel().getSelectedItem();
+        if (sel == null) { alerta("Sin selección", "Seleccione un empleado de la tabla."); return; }
+        parque.getListaEmpleados().remove(sel);
+        cargarEmpleados();
+        cargarAsignaciones();
+        info("Éxito", "Empleado desvinculado del sistema.");
+    }
+
+
+
+    @FXML
+    void onCrearZona(ActionEvent event) {
+        String nombre = txtZonaNombre.getText().trim();
+        String capStr = txtZonaCapacidad.getText().trim();
+        if (nombre.isEmpty() || capStr.isEmpty()) {
+            alerta("Campos incompletos", "Ingrese nombre y capacidad.");
+            return;
+        }
+        try {
+            parque.crearZona(new Zona(nombre, Integer.parseInt(capStr)));
+            cargarZonas();
+            cargarAtracciones();
+            limpiarFormZona();
+            info("Zona creada", "La zona '" + nombre + "' fue registrada.");
+        } catch (NumberFormatException ex) {
+            alerta("Error", "La capacidad debe ser un número entero.");
+        }
+    }
+
+    @FXML
+    void onEliminarZona(ActionEvent event) {
+        Zona sel = tblZonas.getSelectionModel().getSelectedItem();
+        if (sel == null) { alerta("Sin selección", "Seleccione una zona de la tabla."); return; }
+        parque.getListaZonas().remove(sel);
+        cargarZonas();
+        cargarAtracciones();
+        info("Éxito", "Zona eliminada del sistema.");
+    }
+
+
+    @FXML
+    void onCrearAtraccion(ActionEvent event) {
+        String id        = txtAtrId.getText().trim();
+        String nombre    = txtAtrNombre.getText().trim();
+        TipoAtraccion tipo = cmbAtrTipo.getValue();
+        String zonaNombre = cmbAtrZona.getValue();
+        String capStr    = txtAtrCapacidad.getText().trim();
+
+        if (id.isEmpty() || nombre.isEmpty() || tipo == null || zonaNombre == null || capStr.isEmpty()) {
+            alerta("Campos incompletos", "Complete: ID, Nombre, Tipo, Zona y Capacidad.");
+            return;
+        }
+        try {
+            int    cap    = Integer.parseInt(capStr);
+            double altMin = txtAtrAlturaMin.getText().trim().isEmpty() ? 0.0
+                    : Double.parseDouble(txtAtrAlturaMin.getText().trim());
+            int    edMin  = txtAtrEdadMin.getText().trim().isEmpty() ? 0
+                    : Integer.parseInt(txtAtrEdadMin.getText().trim());
+            double costo  = txtAtrCosto.getText().trim().isEmpty() ? 0.0
+                    : Double.parseDouble(txtAtrCosto.getText().trim());
+
+            Atraccion nueva = crearPorTipo(tipo, id, nombre, cap, altMin, edMin, costo);
+            parque.crearAtraccion(nueva, zonaNombre);
+            cargarAtracciones();
+            limpiarFormAtr();
+            info("Atracción creada", "'" + nombre + "' registrada en " + zonaNombre + ".");
+        } catch (NumberFormatException ex) {
+            alerta("Error de formato", "Revise los campos numéricos.");
+        }
+    }
+
+    private Atraccion crearPorTipo(TipoAtraccion tipo, String id, String nombre,
+                                   int cap, double altMin, int edMin, double costo) {
+        return switch (tipo) {
+            case ACUATICA       -> new AtraccionAcuatica(id, nombre, cap, altMin, edMin, costo, false);
+            case MECANICA_ALTURA -> new AtraccionMecanicaAltura(id, nombre, cap, altMin, edMin, costo, 80.0);
+            case SHOW           -> new AtraccionShow(id, nombre, cap, altMin, edMin, costo, "15:00");
+            case FAMILIAR       -> new AtraccionGeneral(id, nombre, cap, altMin, edMin, costo);
+        };
+    }
+
+    @FXML
+    void onDeshabilitarAtraccion(ActionEvent event) {
+        Atraccion sel = tblAtracciones.getSelectionModel().getSelectedItem();
+        if (sel == null) { alerta("Sin selección", "Seleccione una atracción."); return; }
+        parque.eliminarAtraccion(sel.getIdUnico());
+        cargarAtracciones();
+        info("Atracción deshabilitada", "Estado cambiado a CERRADA.");
+    }
+
+
+    @FXML
+    void onAsignarOperador(ActionEvent event) {
+        Operador op  = cmbAsigOperador.getValue();
+        Zona     zona = cmbAsigZona.getValue();
+        if (op == null || zona == null) {
+            alerta("Selección incompleta", "Seleccione operador y zona.");
+            return;
+        }
+        if (op.getZonaAsignada() != null) {
+            op.getZonaAsignada().getListOperadores().remove(op);
+        }
+        op.setZonaAsignada(zona);
+        zona.getListOperadores().add(op);
+        op.getListAtraccionesGestionadas().clear();
+        op.getListAtraccionesGestionadas().addAll(zona.getListaAtracciones());
+
+        cargarEmpleados();
+        cargarAsignaciones();
+        info("Asignación exitosa", op.getNombre() + " asignado a " + zona.getNombre() + ".");
+    }
+
+
+    @FXML
+    void onActivarClima(ActionEvent event) {
+        AlertaClimatica alerta = cmbClima.getValue();
+        if (alerta == null) { alerta("Sin selección", "Seleccione un tipo de alerta."); return; }
+        parque.cambiarEstadoClima(alerta);
+        actualizarEtiquetaClima();
+        cargarAtracciones();
+        info("Alerta activada", "Clima cambiado a: " + alerta);
+    }
+
+    @FXML
+    void onGenerarReporte(ActionEvent event) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("====== REPORTE GENERAL — TECH-PARK UQ ======\n\n");
+        sb.append("Parque        : ").append(parque.getNombre()).append("\n");
+        sb.append("Visitantes    : ").append(parque.getListaVisitantes().size()).append("\n");
+        sb.append("Empleados     : ").append(parque.getListaEmpleados().size()).append("\n");
+        sb.append("Zonas         : ").append(parque.getListaZonas().size()).append("\n");
+        sb.append("Atracciones   : ").append(parque.getListaAtracciones().size()).append("\n");
+        sb.append("Clima actual  : ").append(parque.getEstadoClima()).append("\n");
+        sb.append("\n------  DETALLE POR ZONA  ------\n");
+
+        for (Zona z : parque.getListaZonas()) {
+            sb.append("\n[").append(z.getNombre()).append("]")
+                    .append("  Cap:").append(z.getCapacidadMaxima())
+                    .append("  Atr:").append(z.getListaAtracciones().size())
+                    .append("  Op:").append(z.getListOperadores().size()).append("\n");
+            for (Atraccion a : z.getListaAtracciones()) {
+                sb.append("  • ").append(a.getNombre())
+                        .append(" [").append(a.getEstado()).append("]")
+                        .append("  Visitantes: ").append(a.getContadorUso());
+                if (a.requiereMantenimiento()) sb.append("  ⚠ MANTENIMIENTO");
+                sb.append("\n");
+            }
+        }
+        sb.append("\n------  ALERTAS DE MANTENIMIENTO  ------\n");
+        boolean hay = false;
+        for (Atraccion a : parque.getListaAtracciones()) {
+            if (a.getEstado() == EstadoAtraccion.EN_MANTENIMIENTO) {
+                sb.append("  ⚠ ").append(a.getNombre()).append(" — en mantenimiento preventivo\n");
+                hay = true;
+            }
+        }
+        if (!hay) sb.append("  Sin alertas de mantenimiento.\n");
+        areaReporte.setText(sb.toString());
+    }
+
+
+    private String encontrarZonaDe(Atraccion a) {
+        for (Zona z : parque.getListaZonas()) {
+            if (z.getListaAtracciones().contains(a)) return z.getNombre();
+        }
+        return "Sin zona";
+    }
+
+    private void limpiarFormEmp()  { txtEmpNombre.clear(); txtEmpDocumento.clear(); txtEmpEdad.clear(); }
+    private void limpiarFormZona() { txtZonaNombre.clear(); txtZonaCapacidad.clear(); }
+    private void limpiarFormAtr()  {
+        txtAtrId.clear(); txtAtrNombre.clear(); txtAtrCapacidad.clear();
+        txtAtrAlturaMin.clear(); txtAtrEdadMin.clear(); txtAtrCosto.clear();
+        cmbAtrTipo.setValue(null); cmbAtrZona.setValue(null);
+    }
+
+    private void alerta(String titulo, String msg) {
+        Alert a = new Alert(Alert.AlertType.WARNING);
+        a.setTitle(titulo); a.setHeaderText(null); a.setContentText(msg); a.showAndWait();
+    }
+
+    private void info(String titulo, String msg) {
+        Alert a = new Alert(Alert.AlertType.INFORMATION);
+        a.setTitle(titulo); a.setHeaderText(null); a.setContentText(msg); a.showAndWait();
+    }
+
+    @FXML
+    void onVolverLogin(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(
+                    "/co/edu/uniquindio/techparkuq/vista/Login.fxml"));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Tech-Park UQ — Inicio");
+            stage.show();
+            ((Stage) tblEmpleados.getScene().getWindow()).close();
+        } catch (Exception e) {
+            Alert a = new Alert(Alert.AlertType.ERROR);
+            a.setContentText("No se pudo volver al login: " + e.getMessage());
+            a.showAndWait();
+        }
+    }
+
+}
