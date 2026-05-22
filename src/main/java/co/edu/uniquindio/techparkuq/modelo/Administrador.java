@@ -3,8 +3,9 @@ import co.edu.uniquindio.techparkuq.modelo.abstractas.Empleado;
 import co.edu.uniquindio.techparkuq.modelo.enums.AlertaClimatica;
 import co.edu.uniquindio.techparkuq.modelo.interfaces.IGestionable;
 import co.edu.uniquindio.techparkuq.modelo.abstractas.Atraccion;
+import co.edu.uniquindio.techparkuq.modelo.interfaces.IMantenible;
 
-public class Administrador extends Empleado implements IGestionable {
+public class Administrador extends Empleado implements IGestionable{
 
     private String nivelAcceso;
     private Parque parque;
