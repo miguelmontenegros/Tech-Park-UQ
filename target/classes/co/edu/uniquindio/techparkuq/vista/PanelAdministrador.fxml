@@ -17,7 +17,6 @@
 
 <BorderPane prefHeight="700" prefWidth="970" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.techparkuq.controlador.PanelAdministradorController">
 
-    <!-- HEADER -->
     <top>
         <HBox alignment="CENTER_LEFT" spacing="20" style="-fx-background-color: #00542E; -fx-padding: 14;">
             <Label style="-fx-font-size: 19; -fx-font-weight: bold; -fx-text-fill: white;" text="Panel de Administrador — Tech-Park UQ" />
@@ -27,11 +26,9 @@
         </HBox>
     </top>
 
-    <!-- CONTENIDO: TabPane con las 5 secciones -->
     <center>
         <TabPane style="-fx-background-color: #f5f5f5;" tabClosingPolicy="UNAVAILABLE">
 
-            <!-- ===== TAB 1: EMPLEADOS ===== -->
             <Tab text="Empleados">
                 <VBox spacing="10" style="-fx-padding: 14;">
                     <Label style="-fx-font-weight: bold; -fx-font-size: 13;" text="Listado de Empleados" />
@@ -58,7 +55,6 @@
                 </VBox>
             </Tab>
 
-            <!-- ===== TAB 2: ZONAS ===== -->
             <Tab text="Zonas">
                 <VBox spacing="10" style="-fx-padding: 14;">
                     <Label style="-fx-font-weight: bold; -fx-font-size: 13;" text="Zonas del Parque" />
@@ -83,7 +79,6 @@
                 </VBox>
             </Tab>
 
-            <!-- ===== TAB 3: ATRACCIONES ===== -->
             <Tab text="Atracciones">
                 <VBox spacing="10" style="-fx-padding: 14;">
                     <Label style="-fx-font-weight: bold; -fx-font-size: 13;" text="Atracciones del Parque" />
@@ -118,7 +113,6 @@
                 </VBox>
             </Tab>
 
-            <!-- ===== TAB 4: ASIGNACIONES ===== -->
             <Tab text="Asignaciones">
                 <VBox spacing="15" style="-fx-padding: 20;">
                     <Label style="-fx-font-size: 15; -fx-font-weight: bold;" text="Asignar Operador a Zona" />
@@ -150,7 +144,6 @@
                 </VBox>
             </Tab>
 
-            <!-- ===== TAB 5: CLIMA Y REPORTES ===== -->
             <Tab text="Clima y Reportes">
                 <VBox spacing="15" style="-fx-padding: 20;">
                     <Label style="-fx-font-size: 15; -fx-font-weight: bold;" text="Control Climático" />
