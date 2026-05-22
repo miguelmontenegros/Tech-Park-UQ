@@ -1,5 +1,7 @@
 package co.edu.uniquindio.techparkuq.modelo;
+
 import co.edu.uniquindio.techparkuq.modelo.abstractas.Atraccion;
+import co.edu.uniquindio.techparkuq.modelo.AtraccionShow;
 import co.edu.uniquindio.techparkuq.modelo.abstractas.Empleado;
 import co.edu.uniquindio.techparkuq.modelo.enums.EstadoAtraccion;
 import co.edu.uniquindio.techparkuq.modelo.interfaces.IGestionable;
@@ -150,6 +152,35 @@ public class Parque implements IGestionable {
         for (Zona zona : listaZonas) {
             for (Atraccion atr : zona.getListaAtracciones()) {
                 atr.reaccionarAlClima(nuevaAlerta);
+            }
+        }
+        if (nuevaAlerta != AlertaClimatica.NINGUNA) {
+            String msg = "Alerta climática activa: " + nuevaAlerta
+                    + ". Algunas atracciones pueden estar cerradas por seguridad.";
+            notificarVisitantes(msg);
+        } else {
+            notificarVisitantes("Clima normalizado. Todas las atracciones disponibles han vuelto a operar.");
+        }
+    }
+
+    public void notificarVisitantes(String mensaje) {
+        for (Visitante v : visitantesActivos) {
+            if (v.getTicket() != null && v.getTicket().isActivo()) {
+                v.recibirNotificacion(mensaje);
+                v.agregarNotificacion(mensaje);
+            }
+        }
+    }
+
+    public void notificarInicioShow(AtraccionShow show) {
+        String msg = "¡El show '" + show.getNombre() + "' comenzará pronto! Horario: " + show.getHorarioFuncion();
+        for (Visitante v : visitantesActivos) {
+            if (v.getTicket() != null && v.getTicket().isActivo()) {
+                boolean esFavorito = v.getListaFavoritos().contains(show);
+                if (esFavorito) {
+                    v.recibirNotificacion(msg);
+                    v.agregarNotificacion(msg);
+                }
             }
         }
     }

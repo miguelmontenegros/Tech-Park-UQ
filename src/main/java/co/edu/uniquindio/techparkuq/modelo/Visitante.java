@@ -16,6 +16,7 @@ private String fotografia;
 private List<String> historialVisitas;
 private List<Atraccion> listaFavoritos;
 private Ticket ticket;
+private List<String> notificaciones;
 
 
 public Visitante(String nombre, String documento, int edad, double estatura, String fotografia){
@@ -26,6 +27,7 @@ public Visitante(String nombre, String documento, int edad, double estatura, Str
     this.fotografia=fotografia;
     this.historialVisitas = new ArrayList<>();
     this.listaFavoritos=new ArrayList<>();
+    this.notificaciones = new ArrayList<>();
 }
 
     public void agregarFavorito(Atraccion atraccion) {
@@ -114,6 +116,15 @@ public Visitante(String nombre, String documento, int edad, double estatura, Str
     public Ticket getTicket() {
         return ticket;
     }
+
+    public void agregarNotificacion(String mensaje) {
+        this.notificaciones.add(java.time.LocalDateTime.now() + " — " + mensaje);
+    }
+
+    public List<String> getNotificaciones() {
+        return notificaciones;
+    }
+
 
     @Override
     public String toString(){
