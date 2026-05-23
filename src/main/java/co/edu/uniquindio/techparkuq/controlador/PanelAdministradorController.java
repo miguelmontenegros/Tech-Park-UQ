@@ -345,6 +345,7 @@ public class PanelAdministradorController {
 
             tblZonas.refresh();
             tblAtracciones.refresh();
+            tblAsignaciones.refresh();
             actualizarCombosZona();
 
             limpiarFormZona();
@@ -494,8 +495,10 @@ public class PanelAdministradorController {
         op.getListAtraccionesGestionadas().clear();
         op.getListAtraccionesGestionadas().addAll(zona.getListaAtracciones());
 
-        cargarEmpleados();
-        cargarAsignaciones();
+        tblEmpleados.refresh();
+        tblAsignaciones.refresh();
+        tblZonas.refresh();
+
         info("Asignación exitosa", op.getNombre() + " asignado a " + zona.getNombre() + ".");
     }
 
@@ -518,9 +521,10 @@ public class PanelAdministradorController {
         op.setZonaAsignada(null);
         op.getListAtraccionesGestionadas().clear();
 
-        cargarEmpleados();
-        cargarAsignaciones();
+        tblEmpleados.refresh();
+        tblAsignaciones.refresh();
         tblZonas.refresh();
+
         info("Desasignación exitosa", op.getNombre() + " ha sido desvinculado de la zona " + zona.getNombre() + ".");
     }
 
