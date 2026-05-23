@@ -17,9 +17,11 @@
 <?import javafx.scene.paint.RadialGradient?>
 <?import javafx.scene.paint.Stop?>
 
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
 <BorderPane prefHeight="580" prefWidth="760" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.techparkuq.controlador.PanelVisitanteController">
 
-    <!-- HEADER -->
     <top>
         <HBox alignment="CENTER_LEFT" spacing="20" style="-fx-background-color: #00542E; -fx-padding: 14;">
             <Label style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: white;" text="Portal del Visitante — Tech-Park UQ" />
@@ -33,7 +35,7 @@
     <center>
         <TabPane style="-fx-background-color: #f5f5f5;" tabClosingPolicy="UNAVAILABLE">
 
-            <!-- ===== TAB 1: MI PERFIL ===== -->
+
             <Tab text="Mi Perfil">
                 <VBox spacing="12" style="-fx-padding: 20;">
                     <Label style="-fx-font-size: 15; -fx-font-weight: bold;" text="Datos del Visitante" />
@@ -97,7 +99,6 @@
                 </VBox>
             </Tab>
 
-            <!-- ===== TAB 2: COMPRAR TICKET ===== -->
             <Tab text="Comprar Ticket">
                 <VBox spacing="14" style="-fx-padding: 22;">
                     <Label style="-fx-font-size: 15; -fx-font-weight: bold;" text="Adquirir Entrada" />
@@ -128,7 +129,7 @@
                 </VBox>
             </Tab>
 
-            <!-- ===== TAB 3: ATRACCIONES ===== -->
+
             <Tab text="Atracciones">
                 <VBox spacing="10" style="-fx-padding: 14;">
                     <Label style="-fx-font-size: 14; -fx-font-weight: bold;" text="Atracciones disponibles en el parque" />
@@ -149,7 +150,7 @@
                 </VBox>
             </Tab>
 
-            <!-- ===== TAB 4: MIS FAVORITOS ===== -->
+
             <Tab text="Mis Favoritos">
                 <VBox spacing="10" style="-fx-padding: 14;">
                     <Label style="-fx-font-size: 14; -fx-font-weight: bold;" text="Mis Atracciones Favoritas" />
@@ -165,6 +166,20 @@
                         <Button onAction="#onRefrescarFavoritos" style="-fx-background-color: #00542E; -fx-text-fill: white;" text="Actualizar" />
                     </HBox>
                 </VBox>
+            </Tab>
+
+            <Tab text="Mapa del Parque">
+                <content>
+                    <StackPane alignment="CENTER" style="-fx-background-color: #ffffff;">
+                        <children>
+                            <ImageView fx:id="imgMapa" fitHeight="480.0" fitWidth="850.0" pickOnBounds="true" preserveRatio="true">
+                                <image>
+                                    <Image url="@mapa_parque.png" />
+                                </image>
+                            </ImageView>
+                        </children>
+                    </StackPane>
+                </content>
             </Tab>
 
         </TabPane>

@@ -1,5 +1,9 @@
+D:\WICP\E1\TechParkUQ\src\main\java\co\edu\uniquindio\techparkuq\controlador\LoginController.java
 D:\WICP\E1\TechParkUQ\src\main\java\co\edu\uniquindio\techparkuq\controlador\ModelFactoryController.java
-D:\WICP\E1\TechParkUQ\src\main\java\co\edu\uniquindio\techparkuq\controlador\VentanaPrincipalController.java
+D:\WICP\E1\TechParkUQ\src\main\java\co\edu\uniquindio\techparkuq\controlador\PanelAdministradorController.java
+D:\WICP\E1\TechParkUQ\src\main\java\co\edu\uniquindio\techparkuq\controlador\PanelOperadorController.java
+D:\WICP\E1\TechParkUQ\src\main\java\co\edu\uniquindio\techparkuq\controlador\PanelVisitanteController.java
+D:\WICP\E1\TechParkUQ\src\main\java\co\edu\uniquindio\techparkuq\controlador\RegistroVisitanteController.java
 D:\WICP\E1\TechParkUQ\src\main\java\co\edu\uniquindio\techparkuq\Launcher.java
 D:\WICP\E1\TechParkUQ\src\main\java\co\edu\uniquindio\techparkuq\modelo\abstractas\Atraccion.java
 D:\WICP\E1\TechParkUQ\src\main\java\co\edu\uniquindio\techparkuq\modelo\abstractas\Empleado.java
