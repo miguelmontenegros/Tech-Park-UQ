@@ -1,9 +1,11 @@
 package co.edu.uniquindio.techparkuq.modelo;
 
 import co.edu.uniquindio.techparkuq.modelo.abstractas.Ticket;
+import java.io.Serializable;
 
-public class TicketFastPass extends Ticket {
+public class TicketFastPass extends Ticket implements Serializable {
 
+    private static final long serialVersionUID = 1L;
     private static final double PORCENTAJE_RECARGO = 1.5;
 
     public TicketFastPass(String idTicket, double precioBase) {
@@ -17,4 +19,3 @@ public class TicketFastPass extends Ticket {
         return 1;
     }
 }
-

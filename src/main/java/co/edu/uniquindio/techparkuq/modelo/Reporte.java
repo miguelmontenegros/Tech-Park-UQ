@@ -1,8 +1,11 @@
 package co.edu.uniquindio.techparkuq.modelo;
 
 import java.time.LocalDate;
-public class Reporte {
+import java.io.Serializable;
 
+public class Reporte implements Serializable {
+
+    private static final long serialVersionUID = 1L;
     private LocalDate fecha;
     private double ingresosDiarios;
     private int cierresPorClima;
@@ -23,6 +26,7 @@ public class Reporte {
         System.out.println("Alertas de mantenimiento registradas: " + this.alertasMantenimiento);
         System.out.println("=======================================\n");
     }
+
     public void exportarReporte() {
         String contenidoExportacion =
                 "REPORTE OFICIAL TECH-PARK UQ\n" +

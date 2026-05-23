@@ -1,6 +1,10 @@
 package co.edu.uniquindio.techparkuq.modelo.abstractas;
 
-public abstract class Ticket {
+import java.io.Serializable;
+
+public abstract class Ticket implements Serializable {
+
+    private static final long serialVersionUID = 1L;
     private String idTicket;
     private double precioBase;
     private boolean activo;
@@ -20,11 +24,12 @@ public abstract class Ticket {
     public String getIdTicket() {
         return idTicket;
     }
+
     public double getPrecioBase() {
         return precioBase;
     }
+
     public void setActivo(boolean activo) {
         this.activo = activo;
     }
 }
-

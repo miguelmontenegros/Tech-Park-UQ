@@ -13,13 +13,10 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.paint.Color?>
-<?import javafx.scene.paint.RadialGradient?>
-<?import javafx.scene.paint.Stop?>
-
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
+
 <BorderPane prefHeight="580" prefWidth="760" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.techparkuq.controlador.PanelVisitanteController">
 
     <top>
@@ -35,10 +32,17 @@
     <center>
         <TabPane style="-fx-background-color: #f5f5f5;" tabClosingPolicy="UNAVAILABLE">
 
-
             <Tab text="Mi Perfil">
                 <VBox spacing="12" style="-fx-padding: 20;">
                     <Label style="-fx-font-size: 15; -fx-font-weight: bold;" text="Datos del Visitante" />
+
+                    <!-- Sección de Foto -->
+                    <HBox alignment="CENTER_LEFT" spacing="20" style="-fx-padding: 0 0 10 0;">
+                        <StackPane style="-fx-border-color: #ccc; -fx-border-radius: 5; -fx-background-color: #f0f0f0;">
+                            <ImageView fx:id="imgFotoPerfil" fitHeight="100" fitWidth="100" preserveRatio="true"/>
+                        </StackPane>
+                        <Button onAction="#onAdjuntarFotoPerfil" style="-fx-background-color: #00542E; -fx-text-fill: white;" text="Adjuntar Foto" />
+                    </HBox>
 
                     <HBox spacing="15">
                         <VBox spacing="6">
@@ -63,23 +67,7 @@
 
                     <HBox alignment="CENTER_LEFT" spacing="10">
                         <Label style="-fx-font-weight: bold; -fx-font-size: 14;" text="Saldo virtual: $" />
-                        <Label fx:id="lblSaldo" style="-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #00542E;" text="0.00">
-                            <textFill>
-                                <RadialGradient centerX="0.5" centerY="0.5" radius="0.5">
-                                    <stops>
-                                        <Stop>
-                                            <color>
-                                                <Color />
-                                            </color>
-                                        </Stop>
-                                        <Stop offset="1.0">
-                                            <color>
-                                                <Color red="1.0" green="1.0" blue="1.0" />
-                                            </color>
-                                        </Stop>
-                                    </stops>
-                                </RadialGradient>
-                            </textFill></Label>
+                        <Label fx:id="lblSaldo" style="-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #00542E;" text="0.00" />
                     </HBox>
 
                     <Button onAction="#onGuardarPerfil" style="-fx-background-color: #E65100; -fx-text-fill: white; -fx-font-weight: bold;" text="Guardar Perfil" />
@@ -102,33 +90,26 @@
             <Tab text="Comprar Ticket">
                 <VBox spacing="14" style="-fx-padding: 22;">
                     <Label style="-fx-font-size: 15; -fx-font-weight: bold;" text="Adquirir Entrada" />
-
                     <HBox alignment="CENTER_LEFT" spacing="10">
                         <Label prefWidth="130" text="Tipo de ticket:" />
                         <ComboBox fx:id="cmbTipoTicket" onAction="#onSeleccionarTicket" prefWidth="200" />
                     </HBox>
-
-                    <!-- Panel de integrantes — visible solo si tipo = Familiar -->
                     <HBox fx:id="panelFamiliar" alignment="CENTER_LEFT" managed="false" spacing="10" visible="false">
                         <Label prefWidth="130" text="N° integrantes:" />
                         <TextField fx:id="txtNumIntegrantes" prefWidth="80" promptText="Ej: 4" />
                     </HBox>
-
                     <HBox alignment="CENTER_LEFT" spacing="10">
                         <Label prefWidth="130" text="Precio base ($):" />
-                        <TextField fx:id="txtPrecioBase" prefWidth="130" promptText="Ej: 25000" />
+                        <Label fx:id="lblPrecioBase" style="-fx-font-size: 13; -fx-font-weight: bold; -fx-text-fill: #333;" text="Seleccione un tipo" />
                     </HBox>
-
                     <HBox alignment="CENTER_LEFT" spacing="10">
                         <Label prefWidth="130" text="Costo final:" />
                         <Label fx:id="lblCostoFinal" style="-fx-font-size: 15; -fx-font-weight: bold; -fx-text-fill: #E65100;" text="—" />
                     </HBox>
-
                     <Button onAction="#onComprarTicket" prefWidth="230" style="-fx-background-color: #E65100; -fx-text-fill: white; -fx-font-weight: bold;" text="Calcular y Comprar Ticket" />
                     <Label fx:id="lblResultadoTicket" style="-fx-text-fill: #2E7D32; -fx-font-weight: bold;" text="" />
                 </VBox>
             </Tab>
-
 
             <Tab text="Atracciones">
                 <VBox spacing="10" style="-fx-padding: 14;">
@@ -150,7 +131,6 @@
                 </VBox>
             </Tab>
 
-
             <Tab text="Mis Favoritos">
                 <VBox spacing="10" style="-fx-padding: 14;">
                     <Label style="-fx-font-size: 14; -fx-font-weight: bold;" text="Mis Atracciones Favoritas" />
@@ -168,6 +148,19 @@
                 </VBox>
             </Tab>
 
+            <!-- NUEVA PESTAÑA HISTORIAL -->
+            <Tab text="Mi Historial">
+                <VBox spacing="10" style="-fx-padding: 14;">
+                    <Label style="-fx-font-size: 14; -fx-font-weight: bold;" text="Historial de atracciones visitadas" />
+                    <TableView fx:id="tblHistorial" VBox.vgrow="ALWAYS">
+                        <columns>
+                            <TableColumn fx:id="colHistAtraccion" prefWidth="350" text="Atracción" />
+                            <TableColumn fx:id="colHistFecha" prefWidth="250" text="Fecha y Hora" />
+                        </columns>
+                    </TableView>
+                </VBox>
+            </Tab>
+
             <Tab text="Mapa del Parque">
                 <content>
                     <StackPane alignment="CENTER" style="-fx-background-color: #ffffff;">
@@ -181,7 +174,6 @@
                     </StackPane>
                 </content>
             </Tab>
-
         </TabPane>
     </center>
 </BorderPane>

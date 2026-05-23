@@ -1,13 +1,13 @@
 package co.edu.uniquindio.techparkuq.modelo.abstractas;
 
-import co.edu.uniquindio.techparkuq.modelo.abstractas.Persona;
+import java.io.Serializable;
 
-public abstract class Empleado extends Persona {
+public abstract class Empleado extends Persona implements Serializable {
 
+    private static final long serialVersionUID = 1L;
     private String rol;
     private int edad;
     private double salario;
-
 
     public Empleado(String rol, String nombre, String documento, int edad) {
         super(nombre, documento);
@@ -15,8 +15,6 @@ public abstract class Empleado extends Persona {
         this.edad = edad;
         this.salario = 0.0;
     }
-
-
 
     public String getRol() {
         return rol;
@@ -41,9 +39,6 @@ public abstract class Empleado extends Persona {
     public void setSalario(double salario) {
         this.salario = salario;
     }
-
-
-
 
     @Override
     public String toString() {

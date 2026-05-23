@@ -1,8 +1,6 @@
 package co.edu.uniquindio.techparkuq.controlador;
 
-import co.edu.uniquindio.techparkuq.modelo.Operador;
-import co.edu.uniquindio.techparkuq.modelo.Parque;
-import co.edu.uniquindio.techparkuq.modelo.Visitante;
+import co.edu.uniquindio.techparkuq.modelo.*;
 import co.edu.uniquindio.techparkuq.modelo.abstractas.Empleado;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -53,9 +51,7 @@ public class LoginController {
         if ("OPERADOR".equals(rolSeleccionado)) {
             Operador op = buscarOperador(doc);
             if (op == null) {
-                mostrarAlerta("Operador no encontrado",
-                        "No existe operador con documento: " + doc
-                                + "\n\nDocumentos de prueba:\n• 123456789 — Carlos López\n• 987654321 — Ana García\n• 111222333 — Luis Ramírez");
+                mostrarAlerta("Operador no encontrado", "No existe operador con documento: " + doc);
                 return;
             }
             abrirPanel("/co/edu/uniquindio/techparkuq/vista/PanelOperador.fxml", "Operador", op);
@@ -109,7 +105,7 @@ public class LoginController {
             stage.show();
 
             Stage loginStage = (Stage) panelCredencial.getScene().getWindow();
-            loginStage.close();
+            if (loginStage != null) loginStage.close();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -136,5 +132,4 @@ public class LoginController {
         rolSeleccionado = "";
         mostrarCredencial(false);
     }
-
 }

@@ -1,48 +1,42 @@
 package co.edu.uniquindio.techparkuq.modelo;
 
-import co.edu.uniquindio.techparkuq.modelo.abstractas.Atraccion;
 import co.edu.uniquindio.techparkuq.modelo.abstractas.Ticket;
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
+public class ColaVirtual implements Serializable {
 
-public class ColaVirtual {
-
-
+    private static final long serialVersionUID = 1L;
     private List<Visitante> listEspera;
     private static final int TIEMPO_POR_PERSONA = 5;
 
     public ColaVirtual() {
         this.listEspera = new LinkedList<>();
-
     }
+
     public void agregarVisitante(Visitante visitante) {
         if (visitante == null) return;
 
         Ticket ticket = visitante.getTicket();
 
-
         if (ticket instanceof TicketFastPass) {
             int posicionInsercion = 0;
-
 
             for (int i = 0; i < listEspera.size(); i++) {
                 if (!(listEspera.get(i).getTicket() instanceof TicketFastPass)) {
                     posicionInsercion = i;
                     break;
                 }
-
                 posicionInsercion = i + 1;
             }
             listEspera.add(posicionInsercion, visitante);
             System.out.println("PRIORIDAD: " + visitante.getNombre() + " (Fast-Pass) ha ingresado a la cola virtual.");
         } else {
-
             listEspera.add(visitante);
             System.out.println("LOG: " + visitante.getNombre() + " se ha unido al final de la cola virtual.");
         }
     }
-
 
     public Visitante atenderSiguiente() {
         if (!listEspera.isEmpty()) {
@@ -54,13 +48,9 @@ public class ColaVirtual {
         return null;
     }
 
-
     public int getTiempoEstimado() {
-
         return listEspera.size() * TIEMPO_POR_PERSONA;
     }
-
-
 
     public List<Visitante> getListEspera() {
         return listEspera;
