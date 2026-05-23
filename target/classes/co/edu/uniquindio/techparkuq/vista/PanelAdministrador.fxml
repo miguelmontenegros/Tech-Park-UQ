@@ -13,8 +13,8 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
-<?import javafx.scene.layout.VBox?>
 
+<?import javafx.scene.layout.VBox?>
 <BorderPane prefHeight="700" prefWidth="970" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.techparkuq.controlador.PanelAdministradorController">
 
     <top>
@@ -44,12 +44,13 @@
 
                     <Separator />
 
-                    <Label style="-fx-font-weight: bold;" text="Registrar nuevo Operador:" />
+                    <Label style="-fx-font-weight: bold;" text="Gestión de Operadores:" />
                     <HBox alignment="CENTER_LEFT" spacing="10">
                         <TextField fx:id="txtEmpNombre" prefWidth="185" promptText="Nombre completo" />
                         <TextField fx:id="txtEmpDocumento" prefWidth="130" promptText="Documento" />
                         <TextField fx:id="txtEmpEdad" prefWidth="60" promptText="Edad" />
                         <Button onAction="#onContratarEmpleado" style="-fx-background-color: #00542E; -fx-text-fill: white;" text="Contratar" />
+                        <Button onAction="#onActualizarEmpleado" style="-fx-background-color: #1565C0; -fx-text-fill: white;" text="Actualizar" />
                         <Button onAction="#onDesvincularEmpleado" style="-fx-background-color: #c62828; -fx-text-fill: white;" text="Desvincular" />
                     </HBox>
                 </VBox>
@@ -69,11 +70,12 @@
 
                     <Separator />
 
-                    <Label style="-fx-font-weight: bold;" text="Crear nueva Zona:" />
+                    <Label style="-fx-font-weight: bold;" text="Gestión de Zonas:" />
                     <HBox alignment="CENTER_LEFT" spacing="10">
                         <TextField fx:id="txtZonaNombre" prefWidth="220" promptText="Nombre de la zona" />
                         <TextField fx:id="txtZonaCapacidad" prefWidth="150" promptText="Capacidad máxima" />
                         <Button onAction="#onCrearZona" style="-fx-background-color: #00542E; -fx-text-fill: white;" text="Crear Zona" />
+                        <Button onAction="#onActualizarZona" style="-fx-background-color: #1565C0; -fx-text-fill: white;" text="Actualizar Zona" />
                         <Button onAction="#onEliminarZona" style="-fx-background-color: #c62828; -fx-text-fill: white;" text="Eliminar Zona" />
                     </HBox>
                 </VBox>
@@ -95,7 +97,7 @@
 
                     <Separator />
 
-                    <Label style="-fx-font-weight: bold;" text="Crear nueva Atracción:" />
+                    <Label style="-fx-font-weight: bold;" text="Gestión de Atracciones:" />
                     <HBox alignment="CENTER_LEFT" spacing="8">
                         <TextField fx:id="txtAtrId" prefWidth="90" promptText="ID único" />
                         <TextField fx:id="txtAtrNombre" prefWidth="155" promptText="Nombre" />
@@ -108,6 +110,7 @@
                         <TextField fx:id="txtAtrEdadMin" prefWidth="90" promptText="Edad mín." />
                         <TextField fx:id="txtAtrCosto" prefWidth="120" promptText="Costo adicional" />
                         <Button onAction="#onCrearAtraccion" style="-fx-background-color: #00542E; -fx-text-fill: white;" text="Crear Atracción" />
+                        <Button onAction="#onActualizarAtraccion" style="-fx-background-color: #1565C0; -fx-text-fill: white;" text="Actualizar" />
                         <Button onAction="#onDeshabilitarAtraccion" style="-fx-background-color: #c62828; -fx-text-fill: white;" text="Deshabilitar" />
                     </HBox>
                 </VBox>

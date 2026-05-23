@@ -43,6 +43,8 @@ public abstract class Empleado extends Persona {
     }
 
 
+
+
     @Override
     public String toString() {
         return "Empleado {" +
