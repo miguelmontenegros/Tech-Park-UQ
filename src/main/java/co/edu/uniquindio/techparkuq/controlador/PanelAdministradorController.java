@@ -17,58 +17,56 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.StringConverter;
 
 public class PanelAdministradorController {
 
     private final Parque parque = ModelFactoryController.getInstance().getParque();
 
-    @FXML private TableView<Empleado>           tblEmpleados;
-    @FXML private TableColumn<Empleado, String>  colEmpNombre;
-    @FXML private TableColumn<Empleado, String>  colEmpDocumento;
+    @FXML private TableView<Empleado> tblEmpleados;
+    @FXML private TableColumn<Empleado, String> colEmpNombre;
+    @FXML private TableColumn<Empleado, String> colEmpDocumento;
     @FXML private TableColumn<Empleado, Integer> colEmpEdad;
-    @FXML private TableColumn<Empleado, String>  colEmpRol;
-    @FXML private TableColumn<Empleado, String>  colEmpZona;
+    @FXML private TableColumn<Empleado, String> colEmpRol;
+    @FXML private TableColumn<Empleado, String> colEmpZona;
     @FXML private TextField txtEmpNombre;
     @FXML private TextField txtEmpDocumento;
     @FXML private TextField txtEmpEdad;
 
-    @FXML private TableView<Zona>             tblZonas;
-    @FXML private TableColumn<Zona, String>   colZonaNombre;
-    @FXML private TableColumn<Zona, Integer>  colZonaCapacidad;
-    @FXML private TableColumn<Zona, Integer>  colZonaNumAtr;
-    @FXML private TableColumn<Zona, Integer>  colZonaNumOp;
+    @FXML private TableView<Zona> tblZonas;
+    @FXML private TableColumn<Zona, String> colZonaNombre;
+    @FXML private TableColumn<Zona, Integer> colZonaCapacidad;
+    @FXML private TableColumn<Zona, Integer> colZonaNumAtr;
+    @FXML private TableColumn<Zona, Integer> colZonaNumOp;
     @FXML private TextField txtZonaNombre;
     @FXML private TextField txtZonaCapacidad;
 
-    @FXML private TableView<Atraccion>           tblAtracciones;
-    @FXML private TableColumn<Atraccion, String>  colAtrId;
-    @FXML private TableColumn<Atraccion, String>  colAtrNombre;
-    @FXML private TableColumn<Atraccion, String>  colAtrTipo;
-    @FXML private TableColumn<Atraccion, String>  colAtrZona;
-    @FXML private TableColumn<Atraccion, String>  colAtrEstado;
+    @FXML private TableView<Atraccion> tblAtracciones;
+    @FXML private TableColumn<Atraccion, String> colAtrId;
+    @FXML private TableColumn<Atraccion, String> colAtrNombre;
+    @FXML private TableColumn<Atraccion, String> colAtrTipo;
+    @FXML private TableColumn<Atraccion, String> colAtrZona;
+    @FXML private TableColumn<Atraccion, String> colAtrEstado;
     @FXML private TableColumn<Atraccion, Integer> colAtrContador;
-    @FXML private TextField          txtAtrId;
-    @FXML private TextField          txtAtrNombre;
+    @FXML private TextField txtAtrId;
+    @FXML private TextField txtAtrNombre;
     @FXML private ComboBox<TipoAtraccion> cmbAtrTipo;
-    @FXML private ComboBox<String>        cmbAtrZona;
-    @FXML private TextField          txtAtrCapacidad;
-    @FXML private TextField          txtAtrAlturaMin;
-    @FXML private TextField          txtAtrEdadMin;
-    @FXML private TextField          txtAtrCosto;
+    @FXML private ComboBox<String> cmbAtrZona;
+    @FXML private TextField txtAtrCapacidad;
+    @FXML private TextField txtAtrAlturaMin;
+    @FXML private TextField txtAtrEdadMin;
+    @FXML private TextField txtAtrCosto;
 
-    @FXML private ComboBox<Operador>          cmbAsigOperador;
-    @FXML private ComboBox<Zona>              cmbAsigZona;
-    @FXML private TableView<Operador>         tblAsignaciones;
+    @FXML private ComboBox<Operador> cmbAsigOperador;
+    @FXML private ComboBox<Zona> cmbAsigZona;
+    @FXML private TableView<Operador> tblAsignaciones;
     @FXML private TableColumn<Operador, String> colAsigOperador;
     @FXML private TableColumn<Operador, String> colAsigDoc;
     @FXML private TableColumn<Operador, String> colAsigZona;
 
-    @FXML private Label              lblEstadoClima;
+    @FXML private Label lblEstadoClima;
     @FXML private ComboBox<AlertaClimatica> cmbClima;
-    @FXML private TextArea           areaReporte;
-
+    @FXML private TextArea areaReporte;
 
     @FXML
     void initialize() {
@@ -80,12 +78,11 @@ public class PanelAdministradorController {
         cargarTodos();
     }
 
-
     private void configurarTablaEmpleados() {
-        colEmpNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
-        colEmpDocumento.setCellValueFactory(new PropertyValueFactory<>("documento"));
-        colEmpEdad.setCellValueFactory(new PropertyValueFactory<>("edad"));
-        colEmpRol.setCellValueFactory(new PropertyValueFactory<>("rol"));
+        colEmpNombre.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getNombre()));
+        colEmpDocumento.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getDocumento()));
+        colEmpEdad.setCellValueFactory(c -> new SimpleIntegerProperty(c.getValue().getEdad()).asObject());
+        colEmpRol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getRol()));
         colEmpZona.setCellValueFactory(c -> {
             Empleado e = c.getValue();
             if (e instanceof Operador op) {
@@ -97,29 +94,24 @@ public class PanelAdministradorController {
     }
 
     private void configurarTablaZonas() {
-        colZonaNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
-        colZonaCapacidad.setCellValueFactory(new PropertyValueFactory<>("capacidadMaxima"));
-        colZonaNumAtr.setCellValueFactory(c ->
-                new SimpleIntegerProperty(c.getValue().getListaAtracciones().size()).asObject());
-        colZonaNumOp.setCellValueFactory(c ->
-                new SimpleIntegerProperty(c.getValue().getListOperadores().size()).asObject());
+        colZonaNombre.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getNombre()));
+        colZonaCapacidad.setCellValueFactory(c -> new SimpleIntegerProperty(c.getValue().getCapacidadMaxima()).asObject());
+        colZonaNumAtr.setCellValueFactory(c -> new SimpleIntegerProperty(c.getValue().getListaAtracciones().size()).asObject());
+        colZonaNumOp.setCellValueFactory(c -> new SimpleIntegerProperty(c.getValue().getListOperadores().size()).asObject());
     }
 
     private void configurarTablaAtracciones() {
-        colAtrId.setCellValueFactory(new PropertyValueFactory<>("idUnico"));
-        colAtrNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
-        colAtrTipo.setCellValueFactory(c ->
-                new SimpleStringProperty(c.getValue().getClass().getSimpleName()));
-        colAtrZona.setCellValueFactory(c ->
-                new SimpleStringProperty(encontrarZonaDe(c.getValue())));
-        colAtrEstado.setCellValueFactory(c ->
-                new SimpleStringProperty(c.getValue().getEstado().toString()));
-        colAtrContador.setCellValueFactory(new PropertyValueFactory<>("contadorUso"));
+        colAtrId.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getIdUnico()));
+        colAtrNombre.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getNombre()));
+        colAtrTipo.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getClass().getSimpleName()));
+        colAtrZona.setCellValueFactory(c -> new SimpleStringProperty(encontrarZonaDe(c.getValue())));
+        colAtrEstado.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getEstado().toString()));
+        colAtrContador.setCellValueFactory(c -> new SimpleIntegerProperty(c.getValue().getContadorUso()).asObject());
     }
 
     private void configurarTablaAsignaciones() {
-        colAsigOperador.setCellValueFactory(new PropertyValueFactory<>("nombre"));
-        colAsigDoc.setCellValueFactory(new PropertyValueFactory<>("documento"));
+        colAsigOperador.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getNombre()));
+        colAsigDoc.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getDocumento()));
         colAsigZona.setCellValueFactory(c -> {
             Zona z = c.getValue().getZonaAsignada();
             return new SimpleStringProperty(z != null ? z.getNombre() : "Sin asignar");
@@ -131,9 +123,7 @@ public class PanelAdministradorController {
         cmbClima.setItems(FXCollections.observableArrayList(AlertaClimatica.values()));
 
         cmbAsigOperador.setConverter(new StringConverter<>() {
-            @Override public String toString(Operador op) {
-                return op != null ? op.getNombre() + " (" + op.getDocumento() + ")" : "";
-            }
+            @Override public String toString(Operador op) { return op != null ? op.getNombre() + " (" + op.getDocumento() + ")" : ""; }
             @Override public Operador fromString(String s) { return null; }
         });
 
@@ -145,7 +135,6 @@ public class PanelAdministradorController {
         actualizarCombosZona();
         actualizarCombosOperador();
     }
-
 
     private void cargarTodos() {
         cargarEmpleados();
@@ -197,18 +186,16 @@ public class PanelAdministradorController {
         AlertaClimatica clima = parque.getEstadoClima();
         lblEstadoClima.setText(clima.toString());
         lblEstadoClima.setStyle(switch (clima) {
-            case NINGUNA            -> "-fx-font-weight: bold; -fx-text-fill: #2E7D32; -fx-font-size: 14;";
-            case LLUVIA_FUERTE      -> "-fx-font-weight: bold; -fx-text-fill: #1565C0; -fx-font-size: 14;";
+            case NINGUNA -> "-fx-font-weight: bold; -fx-text-fill: #2E7D32; -fx-font-size: 14;";
+            case LLUVIA_FUERTE -> "-fx-font-weight: bold; -fx-text-fill: #1565C0; -fx-font-size: 14;";
             case TORMENTA_ELECTRICA -> "-fx-font-weight: bold; -fx-text-fill: #c62828; -fx-font-size: 14;";
         });
     }
 
-
-
     @FXML
     void onContratarEmpleado(ActionEvent event) {
         String nombre = txtEmpNombre.getText().trim();
-        String doc    = txtEmpDocumento.getText().trim();
+        String doc = txtEmpDocumento.getText().trim();
         String edadStr = txtEmpEdad.getText().trim();
 
         if (nombre.isEmpty() || doc.isEmpty() || edadStr.isEmpty()) {
@@ -219,6 +206,7 @@ public class PanelAdministradorController {
             int edad = Integer.parseInt(edadStr);
             parque.contratarEmpleado(new Operador(nombre, doc, edad));
             cargarEmpleados();
+            actualizarCombosOperador();
             limpiarFormEmp();
             info("Operador contratado", nombre + " registrado en el sistema.");
         } catch (NumberFormatException ex) {
@@ -233,10 +221,9 @@ public class PanelAdministradorController {
         parque.getListaEmpleados().remove(sel);
         cargarEmpleados();
         cargarAsignaciones();
+        actualizarCombosOperador();
         info("Éxito", "Empleado desvinculado del sistema.");
     }
-
-
 
     @FXML
     void onCrearZona(ActionEvent event) {
@@ -267,31 +254,28 @@ public class PanelAdministradorController {
         info("Éxito", "Zona eliminada del sistema.");
     }
 
-
     @FXML
     void onCrearAtraccion(ActionEvent event) {
-        String id        = txtAtrId.getText().trim();
-        String nombre    = txtAtrNombre.getText().trim();
+        String id = txtAtrId.getText().trim();
+        String nombre = txtAtrNombre.getText().trim();
         TipoAtraccion tipo = cmbAtrTipo.getValue();
         String zonaNombre = cmbAtrZona.getValue();
-        String capStr    = txtAtrCapacidad.getText().trim();
+        String capStr = txtAtrCapacidad.getText().trim();
 
         if (id.isEmpty() || nombre.isEmpty() || tipo == null || zonaNombre == null || capStr.isEmpty()) {
             alerta("Campos incompletos", "Complete: ID, Nombre, Tipo, Zona y Capacidad.");
             return;
         }
         try {
-            int    cap    = Integer.parseInt(capStr);
-            double altMin = txtAtrAlturaMin.getText().trim().isEmpty() ? 0.0
-                    : Double.parseDouble(txtAtrAlturaMin.getText().trim());
-            int    edMin  = txtAtrEdadMin.getText().trim().isEmpty() ? 0
-                    : Integer.parseInt(txtAtrEdadMin.getText().trim());
-            double costo  = txtAtrCosto.getText().trim().isEmpty() ? 0.0
-                    : Double.parseDouble(txtAtrCosto.getText().trim());
+            int cap = Integer.parseInt(capStr);
+            double altMin = txtAtrAlturaMin.getText().trim().isEmpty() ? 0.0 : Double.parseDouble(txtAtrAlturaMin.getText().trim());
+            int edMin = txtAtrEdadMin.getText().trim().isEmpty() ? 0 : Integer.parseInt(txtAtrEdadMin.getText().trim());
+            double costo = txtAtrCosto.getText().trim().isEmpty() ? 0.0 : Double.parseDouble(txtAtrCosto.getText().trim());
 
             Atraccion nueva = crearPorTipo(tipo, id, nombre, cap, altMin, edMin, costo);
             parque.crearAtraccion(nueva, zonaNombre);
             cargarAtracciones();
+            cargarZonas();
             limpiarFormAtr();
             info("Atracción creada", "'" + nombre + "' registrada en " + zonaNombre + ".");
         } catch (NumberFormatException ex) {
@@ -299,13 +283,12 @@ public class PanelAdministradorController {
         }
     }
 
-    private Atraccion crearPorTipo(TipoAtraccion tipo, String id, String nombre,
-                                   int cap, double altMin, int edMin, double costo) {
+    private Atraccion crearPorTipo(TipoAtraccion tipo, String id, String nombre, int cap, double altMin, int edMin, double costo) {
         return switch (tipo) {
-            case ACUATICA       -> new AtraccionAcuatica(id, nombre, cap, altMin, edMin, costo, false);
+            case ACUATICA -> new AtraccionAcuatica(id, nombre, cap, altMin, edMin, costo, false);
             case MECANICA_ALTURA -> new AtraccionMecanicaAltura(id, nombre, cap, altMin, edMin, costo, 80.0);
-            case SHOW           -> new AtraccionShow(id, nombre, cap, altMin, edMin, costo, "15:00");
-            case FAMILIAR       -> new AtraccionGeneral(id, nombre, cap, altMin, edMin, costo);
+            case SHOW -> new AtraccionShow(id, nombre, cap, altMin, edMin, costo, "15:00");
+            case FAMILIAR -> new AtraccionGeneral(id, nombre, cap, altMin, edMin, costo);
         };
     }
 
@@ -318,11 +301,10 @@ public class PanelAdministradorController {
         info("Atracción deshabilitada", "Estado cambiado a CERRADA.");
     }
 
-
     @FXML
     void onAsignarOperador(ActionEvent event) {
-        Operador op  = cmbAsigOperador.getValue();
-        Zona     zona = cmbAsigZona.getValue();
+        Operador op = cmbAsigOperador.getValue();
+        Zona zona = cmbAsigZona.getValue();
         if (op == null || zona == null) {
             alerta("Selección incompleta", "Seleccione operador y zona.");
             return;
@@ -340,7 +322,6 @@ public class PanelAdministradorController {
         info("Asignación exitosa", op.getNombre() + " asignado a " + zona.getNombre() + ".");
     }
 
-
     @FXML
     void onActivarClima(ActionEvent event) {
         AlertaClimatica alerta = cmbClima.getValue();
@@ -355,39 +336,38 @@ public class PanelAdministradorController {
     void onGenerarReporte(ActionEvent event) {
         StringBuilder sb = new StringBuilder();
         sb.append("====== REPORTE GENERAL — TECH-PARK UQ ======\n\n");
-        sb.append("Parque        : ").append(parque.getNombre()).append("\n");
-        sb.append("Visitantes    : ").append(parque.getListaVisitantes().size()).append("\n");
-        sb.append("Empleados     : ").append(parque.getListaEmpleados().size()).append("\n");
-        sb.append("Zonas         : ").append(parque.getListaZonas().size()).append("\n");
-        sb.append("Atracciones   : ").append(parque.getListaAtracciones().size()).append("\n");
-        sb.append("Clima actual  : ").append(parque.getEstadoClima()).append("\n");
-        sb.append("\n------  DETALLE POR ZONA  ------\n");
+        sb.append("Parque : ").append(parque.getNombre()).append("\n");
+        sb.append("Visitantes : ").append(parque.getListaVisitantes().size()).append("\n");
+        sb.append("Empleados : ").append(parque.getListaEmpleados().size()).append("\n");
+        sb.append("Zonas : ").append(parque.getListaZonas().size()).append("\n");
+        sb.append("Atracciones : ").append(parque.getListaAtracciones().size()).append("\n");
+        sb.append("Clima actual : ").append(parque.getEstadoClima()).append("\n");
+        sb.append("\n------ DETALLE POR ZONA ------\n");
 
         for (Zona z : parque.getListaZonas()) {
             sb.append("\n[").append(z.getNombre()).append("]")
-                    .append("  Cap:").append(z.getCapacidadMaxima())
-                    .append("  Atr:").append(z.getListaAtracciones().size())
-                    .append("  Op:").append(z.getListOperadores().size()).append("\n");
+                    .append(" Cap:").append(z.getCapacidadMaxima())
+                    .append(" Atr:").append(z.getListaAtracciones().size())
+                    .append(" Op:").append(z.getListOperadores().size()).append("\n");
             for (Atraccion a : z.getListaAtracciones()) {
-                sb.append("  • ").append(a.getNombre())
+                sb.append(" • ").append(a.getNombre())
                         .append(" [").append(a.getEstado()).append("]")
-                        .append("  Visitantes: ").append(a.getContadorUso());
-                if (a.requiereMantenimiento()) sb.append("  ⚠ MANTENIMIENTO");
+                        .append(" Visitantes: ").append(a.getContadorUso());
+                if (a.requiereMantenimiento()) sb.append(" ⚠ MANTENIMIENTO");
                 sb.append("\n");
             }
         }
-        sb.append("\n------  ALERTAS DE MANTENIMIENTO  ------\n");
+        sb.append("\n------ ALERTAS DE MANTENIMIENTO ------\n");
         boolean hay = false;
         for (Atraccion a : parque.getListaAtracciones()) {
             if (a.getEstado() == EstadoAtraccion.EN_MANTENIMIENTO) {
-                sb.append("  ⚠ ").append(a.getNombre()).append(" — en mantenimiento preventivo\n");
+                sb.append(" ⚠ ").append(a.getNombre()).append(" — en mantenimiento preventivo\n");
                 hay = true;
             }
         }
-        if (!hay) sb.append("  Sin alertas de mantenimiento.\n");
+        if (!hay) sb.append(" Sin alertas de mantenimiento.\n");
         areaReporte.setText(sb.toString());
     }
-
 
     private String encontrarZonaDe(Atraccion a) {
         for (Zona z : parque.getListaZonas()) {
@@ -396,9 +376,9 @@ public class PanelAdministradorController {
         return "Sin zona";
     }
 
-    private void limpiarFormEmp()  { txtEmpNombre.clear(); txtEmpDocumento.clear(); txtEmpEdad.clear(); }
+    private void limpiarFormEmp() { txtEmpNombre.clear(); txtEmpDocumento.clear(); txtEmpEdad.clear(); }
     private void limpiarFormZona() { txtZonaNombre.clear(); txtZonaCapacidad.clear(); }
-    private void limpiarFormAtr()  {
+    private void limpiarFormAtr() {
         txtAtrId.clear(); txtAtrNombre.clear(); txtAtrCapacidad.clear();
         txtAtrAlturaMin.clear(); txtAtrEdadMin.clear(); txtAtrCosto.clear();
         cmbAtrTipo.setValue(null); cmbAtrZona.setValue(null);
@@ -417,8 +397,7 @@ public class PanelAdministradorController {
     @FXML
     void onVolverLogin(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(
-                    "/co/edu/uniquindio/techparkuq/vista/Login.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/co/edu/uniquindio/techparkuq/vista/Login.fxml"));
             Parent root = loader.load();
             Stage stage = new Stage();
             stage.setScene(new Scene(root));
@@ -431,5 +410,4 @@ public class PanelAdministradorController {
             a.showAndWait();
         }
     }
-
 }

@@ -3,6 +3,8 @@ package co.edu.uniquindio.techparkuq.controlador;
 import co.edu.uniquindio.techparkuq.modelo.*;
 import co.edu.uniquindio.techparkuq.modelo.abstractas.Atraccion;
 import co.edu.uniquindio.techparkuq.modelo.enums.EstadoAtraccion;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -11,7 +13,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 
@@ -22,37 +23,36 @@ public class PanelOperadorController {
 
     @FXML private Label lblInfoOperador;
     @FXML private Label lblZonaInfo;
-    @FXML private TableView<Atraccion>           tblMisAtracciones;
-    @FXML private TableColumn<Atraccion, String>  colOpNombre;
-    @FXML private TableColumn<Atraccion, String>  colOpEstado;
+    @FXML private TableView<Atraccion> tblMisAtracciones;
+    @FXML private TableColumn<Atraccion, String> colOpNombre;
+    @FXML private TableColumn<Atraccion, String> colOpEstado;
     @FXML private TableColumn<Atraccion, Integer> colOpContador;
     @FXML private TableColumn<Atraccion, Integer> colOpEspera;
-    @FXML private TableColumn<Atraccion, Double>  colOpAltura;
+    @FXML private TableColumn<Atraccion, Double> colOpAltura;
     @FXML private TableColumn<Atraccion, Integer> colOpEdad;
 
-    @FXML private ComboBox<Atraccion>       cmbCtrlAtraccion;
-    @FXML private Label                     lblEstadoActual;
+    @FXML private ComboBox<Atraccion> cmbCtrlAtraccion;
+    @FXML private Label lblEstadoActual;
     @FXML private ComboBox<EstadoAtraccion> cmbNuevoEstado;
-    @FXML private TextField                 txtMotivoCierre;
-    @FXML private Label                     lblResultadoControl;
+    @FXML private TextField txtMotivoCierre;
+    @FXML private Label lblResultadoControl;
 
     @FXML private ComboBox<Atraccion> cmbMantAtraccion;
-    @FXML private Label               lblMantEstado;
-    @FXML private Label               lblMantContador;
-    @FXML private Label               lblNecesitaRevision;
-    @FXML private TextArea            areaLogMant;
+    @FXML private Label lblMantEstado;
+    @FXML private Label lblMantContador;
+    @FXML private Label lblNecesitaRevision;
+    @FXML private TextArea areaLogMant;
 
-    @FXML private ComboBox<Visitante>  cmbVisitante;
-    @FXML private ComboBox<Atraccion>  cmbValidarAtraccion;
-    @FXML private Label                lblResultadoAcceso;
+    @FXML private ComboBox<Visitante> cmbVisitante;
+    @FXML private ComboBox<Atraccion> cmbValidarAtraccion;
+    @FXML private Label lblResultadoAcceso;
 
-    @FXML private ComboBox<Atraccion>  cmbColaAtraccion;
-    @FXML private ComboBox<Visitante>  cmbColaVisitante;
-    @FXML private Label                lblColaTiempoEspera;
-    @FXML private Label                lblColaTamanio;
-    @FXML private ListView<String>     listCola;
-    @FXML private Label                lblColaResultado;
-
+    @FXML private ComboBox<Atraccion> cmbColaAtraccion;
+    @FXML private ComboBox<Visitante> cmbColaVisitante;
+    @FXML private Label lblColaTiempoEspera;
+    @FXML private Label lblColaTamanio;
+    @FXML private ListView<String> listCola;
+    @FXML private Label lblColaResultado;
 
     @FXML
     void initialize() {
@@ -67,8 +67,7 @@ public class PanelOperadorController {
 
     private void actualizarVista() {
         if (operador == null) return;
-        String zona = operador.getZonaAsignada() != null
-                ? operador.getZonaAsignada().getNombre() : "Sin asignar";
+        String zona = operador.getZonaAsignada() != null ? operador.getZonaAsignada().getNombre() : "Sin asignar";
         lblInfoOperador.setText("Operador: " + operador.getNombre() + "  |  " + zona);
         lblZonaInfo.setText("Zona: " + zona);
         cargarAtracciones();
@@ -76,13 +75,12 @@ public class PanelOperadorController {
     }
 
     private void configurarTablaAtracciones() {
-        colOpNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
-        colOpEstado.setCellValueFactory(c ->
-                new SimpleStringProperty(c.getValue().getEstado().toString()));
-        colOpContador.setCellValueFactory(new PropertyValueFactory<>("contadorUso"));
-        colOpEspera.setCellValueFactory(new PropertyValueFactory<>("tiempoEsperaEstimado"));
-        colOpAltura.setCellValueFactory(new PropertyValueFactory<>("alturaMinima"));
-        colOpEdad.setCellValueFactory(new PropertyValueFactory<>("edadMinima"));
+        colOpNombre.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getNombre()));
+        colOpEstado.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getEstado().toString()));
+        colOpContador.setCellValueFactory(c -> new SimpleIntegerProperty(c.getValue().getContadorUso()).asObject());
+        colOpEspera.setCellValueFactory(c -> new SimpleIntegerProperty(c.getValue().getTiempoEsperaEstimado()).asObject());
+        colOpAltura.setCellValueFactory(c -> new SimpleDoubleProperty(c.getValue().getAlturaMinima()).asObject());
+        colOpEdad.setCellValueFactory(c -> new SimpleIntegerProperty(c.getValue().getEdadMinima()).asObject());
     }
 
     private void configurarCombos() {
@@ -96,29 +94,24 @@ public class PanelOperadorController {
         cmbColaAtraccion.setConverter(convAtr);
 
         cmbVisitante.setConverter(new StringConverter<>() {
-            @Override public String toString(Visitante v) {
-                return v != null ? v.getNombre() + " (" + v.getDocumento() + ")" : "";
-            }
+            @Override public String toString(Visitante v) { return v != null ? v.getNombre() + " (" + v.getDocumento() + ")" : ""; }
             @Override public Visitante fromString(String s) { return null; }
         });
         cmbColaVisitante.setConverter(new StringConverter<>() {
-            @Override public String toString(Visitante v) {
-                return v != null ? v.getNombre() + " (" + (v.getTicket() != null
-                        ? v.getTicket().getClass().getSimpleName() : "Sin ticket") + ")" : "";
-            }
+            @Override public String toString(Visitante v) { return v != null ? v.getNombre() + " (" + (v.getTicket() != null ? v.getTicket().getClass().getSimpleName() : "Sin ticket") + ")" : ""; }
             @Override public Visitante fromString(String s) { return null; }
         });
 
         if (operador == null) return;
         var atrs = FXCollections.observableArrayList(operador.getListAtraccionesGestionadas());
         cmbCtrlAtraccion.setItems(atrs);
-        cmbMantAtraccion.setItems(FXCollections.observableArrayList(operador.getListAtraccionesGestionadas()));
-        cmbValidarAtraccion.setItems(FXCollections.observableArrayList(operador.getListAtraccionesGestionadas()));
-        cmbColaAtraccion.setItems(FXCollections.observableArrayList(operador.getListAtraccionesGestionadas()));
+        cmbMantAtraccion.setItems(atrs);
+        cmbValidarAtraccion.setItems(atrs);
+        cmbColaAtraccion.setItems(atrs);
 
         var visitantes = FXCollections.observableArrayList(parque.getListaVisitantes());
         cmbVisitante.setItems(visitantes);
-        cmbColaVisitante.setItems(FXCollections.observableArrayList(parque.getListaVisitantes()));
+        cmbColaVisitante.setItems(visitantes);
     }
 
     private void cargarAtracciones() {
@@ -126,12 +119,10 @@ public class PanelOperadorController {
         tblMisAtracciones.setItems(FXCollections.observableArrayList(operador.getListAtraccionesGestionadas()));
     }
 
-
     @FXML
     void onRefrescarAtracciones(ActionEvent event) {
         cargarAtracciones();
     }
-
 
     @FXML
     void onSeleccionarAtraccion(ActionEvent event) {
@@ -157,7 +148,6 @@ public class PanelOperadorController {
         cargarAtracciones();
     }
 
-
     @FXML
     void onSeleccionarAtraccionMant(ActionEvent event) {
         Atraccion a = cmbMantAtraccion.getValue();
@@ -178,8 +168,7 @@ public class PanelOperadorController {
         Atraccion a = cmbMantAtraccion.getValue();
         if (a == null) { alerta("Sin selección", "Seleccione una atracción."); return; }
         a.registrarRevisionTecnica();
-        areaLogMant.appendText("• Revisión completada: " + a.getNombre()
-                + "  |  Fecha: " + java.time.LocalDate.now() + "\n");
+        areaLogMant.appendText("• Revisión completada: " + a.getNombre() + "  |  Fecha: " + java.time.LocalDate.now() + "\n");
         lblMantEstado.setText(a.getEstado().toString());
         lblMantContador.setText(String.valueOf(a.getContadorUso()));
         lblNecesitaRevision.setText("No");
@@ -187,7 +176,6 @@ public class PanelOperadorController {
         cargarAtracciones();
         info("Revisión registrada", a.getNombre() + " vuelve a estado ACTIVA.");
     }
-
 
     @FXML
     void onValidarAcceso(ActionEvent event) {
@@ -208,7 +196,6 @@ public class PanelOperadorController {
             lblResultadoAcceso.setStyle("-fx-text-fill: #c62828; -fx-font-weight: bold; -fx-font-size: 14;");
         }
     }
-
 
     @FXML
     void onSeleccionarAtraccionCola(ActionEvent event) {
@@ -245,8 +232,7 @@ public class PanelOperadorController {
         ColaVirtual cola = a.getColaVirtual();
         Visitante siguiente = cola.atenderSiguiente();
         if (siguiente != null) {
-            lblColaResultado.setText("✓ Atendiendo a: " + siguiente.getNombre()
-                    + "  |  Ticket: " + siguiente.getTicket().getClass().getSimpleName());
+            lblColaResultado.setText("✓ Atendiendo a: " + siguiente.getNombre() + "  |  Ticket: " + siguiente.getTicket().getClass().getSimpleName());
             lblColaResultado.setStyle("-fx-text-fill: #00542E; -fx-font-weight: bold;");
             parque.registrarUsoAtraccion(siguiente, a);
             cargarAtracciones();
@@ -279,12 +265,10 @@ public class PanelOperadorController {
         }
     }
 
-
     @FXML
     void onVolverLogin(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(
-                    "/co/edu/uniquindio/techparkuq/vista/Login.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/co/edu/uniquindio/techparkuq/vista/Login.fxml"));
             Parent root = loader.load();
             Stage stage = new Stage();
             stage.setScene(new Scene(root));
@@ -295,7 +279,6 @@ public class PanelOperadorController {
             alerta("Error", "No se pudo volver al login: " + e.getMessage());
         }
     }
-
 
     private void alerta(String titulo, String msg) {
         Alert a = new Alert(Alert.AlertType.WARNING);
