@@ -31,10 +31,9 @@ public class PanelVisitanteController {
     private final Parque parque = ModelFactoryController.getInstance().getParque();
     private Visitante visitante;
 
-    private static final double PRECIO_GENERAL   = 35_000;
-    private static final double PRECIO_FAMILIAR  = 28_000;
-    private static final double PRECIO_FASTPASS  = 55_000;
-
+    private static final double PRECIO_GENERAL = 35000;
+    private static final double PRECIO_FAMILIAR = 28000;
+    private static final double PRECIO_FASTPASS = 55000;
 
     @FXML private Label lblNombreVisitante;
     @FXML private TextField txtNombre;
@@ -161,6 +160,7 @@ public class PanelVisitanteController {
             alerta("Error de formato", "Edad (entero) y Estatura (decimal) deben ser números.");
         }
     }
+
     @FXML
     void onRecargarSaldo(ActionEvent event) {
         if (visitante == null) {
@@ -219,7 +219,7 @@ public class PanelVisitanteController {
         montoBox.setStyle("-fx-background-color: #e8f5e9; -fx-border-color: #00542E; -fx-border-radius: 5; -fx-background-radius: 5;");
 
         TextField txtNum = new TextField();
-        txtNum.setPromptText("1234  5678  9012  3456");
+        txtNum.setPromptText("1234 5678 9012 3456");
         txtNum.setFont(Font.font("System", 14));
         txtNum.setPrefWidth(370);
         txtNum.setStyle("-fx-padding: 8; -fx-border-color: #ccc; -fx-border-radius: 5; -fx-background-radius: 5;");
@@ -264,10 +264,10 @@ public class PanelVisitanteController {
             if (!d.equals(n)) { txtCvv.setText(d); txtCvv.positionCaret(d.length()); }
         });
 
-        final String[] CARD_NOMBRES  = {"Visa", "Mastercard", "American Express", "AMEX"};
+        final String[] CARD_NOMBRES = {"Visa", "Mastercard", "American Express", "AMEX"};
         final String[] CARD_ARCHIVOS = {"visa", "mastercard", "amex", "amex2"};
-        final String[] CARD_BG_UNSEL = {"#f0f4ff", "#fff4f0", "#f0f8ff", "#f0f8ff"};
-        final String[] CARD_BG_SEL   = {"#1A1F71", "#cc0000", "#0070BA", "#0070BA"};
+        final String[] CARD_BG_UNSEL = {"#fff4f0", "#fff4f0", "#f8f8ff", "#f8f8ff"};
+        final String[] CARD_BG_SEL = {"#1A1F71", "#cc0000", "#0070BA", "#0070BA"};
 
         final String[] tipoSeleccionado = {null};
         Button[] btnsTarjeta = new Button[CARD_NOMBRES.length];
@@ -306,11 +306,11 @@ public class PanelVisitanteController {
             selectorTarjeta.getChildren().add(btn);
         }
 
-        Label lNum    = campoLabel("Numero de tarjeta");
+        Label lNum = campoLabel("Numero de tarjeta");
         Label lNombre = campoLabel("Nombre del titular");
-        Label lVenc   = campoLabel("Vencimiento (MM/AA)");
-        Label lCvv    = campoLabel("CVV");
-        Label lTipo   = campoLabel("Tipo de tarjeta");
+        Label lVenc = campoLabel("Vencimiento (MM/AA)");
+        Label lCvv = campoLabel("CVV");
+        Label lTipo = campoLabel("Tipo de tarjeta");
 
         HBox fila1 = new HBox(16,
                 new VBox(4, lVenc, txtVenc),
@@ -345,14 +345,14 @@ public class PanelVisitanteController {
 
         btnPagar.setOnAction(e -> {
             String num = txtNum.getText().replaceAll("\\s", "");
-            if (num.length() < 16)          { setError(lblMsg, "Numero de tarjeta invalido (16 digitos)."); return; }
+            if (num.length() < 16) { setError(lblMsg, "Numero de tarjeta invalido (16 digitos)."); return; }
             if (txtNombre.getText().isBlank()){ setError(lblMsg, "Ingrese el nombre del titular."); return; }
             if (!txtVenc.getText().matches("\\d{2}/\\d{2}")) { setError(lblMsg, "Vencimiento invalido, use MM/AA."); return; }
             if (txtCvv.getText().length() < 3){ setError(lblMsg, "CVV invalido (minimo 3 digitos)."); return; }
-            if (tipoSeleccionado[0] == null)  { setError(lblMsg, "Seleccione el tipo de tarjeta."); return; }
+            if (tipoSeleccionado[0] == null) { setError(lblMsg, "Seleccione el tipo de tarjeta."); return; }
 
             try {
-                int mes  = Integer.parseInt(txtVenc.getText().substring(0, 2));
+                int mes = Integer.parseInt(txtVenc.getText().substring(0, 2));
                 int anio = Integer.parseInt(txtVenc.getText().substring(3)) + 2000;
                 java.time.LocalDate hoy = java.time.LocalDate.now();
                 if (mes < 1 || mes > 12) { setError(lblMsg, "Mes invalido."); return; }
@@ -442,7 +442,6 @@ public class PanelVisitanteController {
         lbl.setText(msg);
     }
 
-
     @FXML
     void onSeleccionarTicket(ActionEvent event) {
         String tipo = cmbTipoTicket.getValue();
@@ -454,7 +453,7 @@ public class PanelVisitanteController {
         if (tipo == null) return;
         switch (tipo) {
             case "General"   -> lblPrecioBase.setText("$" + String.format("%,.0f", PRECIO_GENERAL)   + " / entrada");
-            case "Familiar"  -> lblPrecioBase.setText("$" + String.format("%,.0f", PRECIO_FAMILIAR)  + " / integrante  (−15% desde 4 personas)");
+            case "Familiar"  -> lblPrecioBase.setText("$" + String.format("%,.0f", PRECIO_FAMILIAR)  + " / integrante  (-15% desde 4 personas)");
             case "Fast-Pass" -> lblPrecioBase.setText("$" + String.format("%,.0f", PRECIO_FASTPASS)  + " (incluye +50% de recargo VIP)");
         }
     }
@@ -462,7 +461,7 @@ public class PanelVisitanteController {
     @FXML
     void onComprarTicket(ActionEvent event) {
         if (visitante == null) {
-            alerta("Sin perfil", "Primero registre su perfil en la pestaña 'Mi Perfil'.");
+            alerta("Sin perfil", "Primero registre su perfil en la pestaña Mi Perfil.");
             return;
         }
         String tipo = cmbTipoTicket.getValue();
@@ -479,7 +478,7 @@ public class PanelVisitanteController {
                 case "Familiar" -> {
                     String numStr = txtNumIntegrantes.getText().trim();
                     int num = numStr.isEmpty() ? 1 : Integer.parseInt(numStr);
-                    if (num < 1) { alerta("Integrantes inválido", "Ingrese al menos 1 integrante."); return; }
+                    if (num < 1) { alerta("Integrantes invalido", "Ingrese al menos 1 integrante."); return; }
                     ticket = new TicketFamiliar(idTicket, PRECIO_FAMILIAR, num);
                 }
                 case "Fast-Pass" -> ticket = new TicketFastPass(idTicket, PRECIO_FASTPASS);
@@ -498,16 +497,15 @@ public class PanelVisitanteController {
             visitante.comprarTicket(ticket);
             lblSaldo.setText(String.format("%.2f", visitante.getSaldoVirtual()));
             actualizarInfoTicket();
-            lblResultadoTicket.setText("¡Ticket " + tipo + " adquirido correctamente!");
+            lblResultadoTicket.setText("Ticket " + tipo + " adquirido correctamente!");
             info("Compra exitosa",
                     "Ticket adquirido.\nTipo: " + tipo
                             + "\nCosto final: $" + String.format("%,.0f", costoFinal));
 
         } catch (NumberFormatException ex) {
-            alerta("Error de formato", "Ingrese un número válido de integrantes.");
+            alerta("Error de formato", "Ingrese un numero valido de integrantes.");
         }
     }
-
 
     @FXML
     void onRefrescarAtracciones(ActionEvent event) {
@@ -518,11 +516,11 @@ public class PanelVisitanteController {
     @FXML
     void onAgregarFavorito(ActionEvent event) {
         if (visitante == null) {
-            alerta("Sin perfil", "Primero registre o inicie sesión con su perfil.");
+            alerta("Sin perfil", "Primero registre o inicie sesion con su perfil.");
             return;
         }
         Atraccion sel = tblAtracciones.getSelectionModel().getSelectedItem();
-        if (sel == null) { alerta("Sin selección", "Seleccione una atracción de la tabla."); return; }
+        if (sel == null) { alerta("Sin seleccion", "Seleccione una atraccion de la tabla."); return; }
         visitante.agregarFavorito(sel);
         cargarFavoritos();
         info("Favorito agregado", sel.getNombre() + " fue agregada a tus favoritos.");
@@ -532,7 +530,7 @@ public class PanelVisitanteController {
     void onEliminarFavorito(ActionEvent event) {
         if (visitante == null) return;
         Atraccion sel = tblFavoritos.getSelectionModel().getSelectedItem();
-        if (sel == null) { alerta("Sin selección", "Seleccione una atracción de la lista."); return; }
+        if (sel == null) { alerta("Sin seleccion", "Seleccione una atraccion de la lista."); return; }
         visitante.getListaFavoritos().remove(sel);
         cargarFavoritos();
     }
@@ -560,7 +558,7 @@ public class PanelVisitanteController {
             Parent root = loader.load();
             Stage stage = new Stage();
             stage.setScene(new Scene(root));
-            stage.setTitle("Tech-Park UQ — Inicio");
+            stage.setTitle("Tech-Park UQ - Inicio");
             stage.show();
             ((Stage) lblNombreVisitante.getScene().getWindow()).close();
         } catch (Exception e) {
