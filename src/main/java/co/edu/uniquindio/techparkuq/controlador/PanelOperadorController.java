@@ -214,6 +214,12 @@ public class PanelOperadorController {
             alerta("Sin ticket", v.getNombre() + " no tiene ticket activo.");
             return;
         }
+        boolean ok = operador.validarAcceso(v, a);
+        if (!ok) {
+            lblColaResultado.setText("✗ No se puede agregar: Acceso denegado por restricciones.");
+            lblColaResultado.setStyle("-fx-text-fill: #c62828; -fx-font-weight: bold;");
+            return;
+        }
         ColaVirtual cola = a.getColaVirtual();
         if (cola.getListEspera().contains(v)) {
             alerta("Ya en cola", v.getNombre() + " ya está en la cola de " + a.getNombre() + ".");
