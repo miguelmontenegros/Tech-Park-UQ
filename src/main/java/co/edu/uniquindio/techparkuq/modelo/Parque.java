@@ -1,16 +1,17 @@
 package co.edu.uniquindio.techparkuq.modelo;
 
 import co.edu.uniquindio.techparkuq.modelo.abstractas.Atraccion;
-import co.edu.uniquindio.techparkuq.modelo.AtraccionShow;
 import co.edu.uniquindio.techparkuq.modelo.abstractas.Empleado;
+import co.edu.uniquindio.techparkuq.modelo.enums.AlertaClimatica;
 import co.edu.uniquindio.techparkuq.modelo.enums.EstadoAtraccion;
 import co.edu.uniquindio.techparkuq.modelo.interfaces.IGestionable;
-import co.edu.uniquindio.techparkuq.modelo.enums.AlertaClimatica;
-
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Parque implements IGestionable {
+public class Parque implements IGestionable, Serializable {
+
+    private static final long serialVersionUID = 1L;
     private String nombre;
     private int capacidadMaxima;
     private double ingresosDiarios;
@@ -31,7 +32,6 @@ public class Parque implements IGestionable {
 
     public void contratarEmpleado(Empleado empleado) {
         listaEmpleados.add(empleado);
-
     }
 
     public AlertaClimatica getEstadoClima() {
@@ -39,7 +39,6 @@ public class Parque implements IGestionable {
     }
 
     public void agregarZona(Zona zona) {
-
         listaZonas.add(zona);
     }
 
@@ -52,7 +51,6 @@ public class Parque implements IGestionable {
         System.out.println(v.getNombre() + " ha ingresado al parque.");
         return true;
     }
-
 
     public String getNombre() {
         return nombre;
@@ -100,7 +98,6 @@ public class Parque implements IGestionable {
                 "Visitantes actuales: " + visitantesActivos.size();
     }
 
-
     public boolean validarAcceso(Visitante v, Atraccion a) {
         if (!a.validarRestricciones(v)) {
             System.out.println("Acceso denegado: El visitante no cumple requisitos o la atracción " + a.getNombre() + " no está activa.");
@@ -126,25 +123,17 @@ public class Parque implements IGestionable {
     }
 
     public Atraccion buscarAtraccionPorNombre(String nombreAtraccion) {
-
-
         for (Zona zona : listaZonas) {
-
-
             for (Atraccion atraccion : zona.getListaAtracciones()) {
-
-
                 if (atraccion.getNombre().equalsIgnoreCase(nombreAtraccion)) {
                     System.out.println("Atracción encontrada en la zona: " + zona.getNombre());
                     return atraccion;
                 }
             }
         }
-
         System.out.println("La atracción '" + nombreAtraccion + "' no se encuentra en el parque.");
         return null;
     }
-
 
     public void cambiarEstadoClima(AlertaClimatica nuevaAlerta) {
         this.estadoClima = nuevaAlerta;
@@ -188,7 +177,6 @@ public class Parque implements IGestionable {
     @Override
     public void eliminarAtraccion(String idUnico) {
         if (idUnico == null) return;
-
         boolean encontrada = false;
         for (Zona zona : listaZonas) {
             for (Atraccion atr : zona.getListaAtracciones()) {
@@ -218,7 +206,6 @@ public class Parque implements IGestionable {
             System.out.println("Error: Atracción nula.");
             return;
         }
-
         Zona zonaDestino = null;
         for (Zona z : listaZonas) {
             if (z.getNombre().equalsIgnoreCase(nombreZona)) {
@@ -226,7 +213,6 @@ public class Parque implements IGestionable {
                 break;
             }
         }
-
         if (zonaDestino != null) {
             zonaDestino.agregarAtraccion(atraccion);
             System.out.println("Atracción '" + atraccion.getNombre() + "' registrada con éxito en la zona: " + nombreZona);

@@ -1,19 +1,19 @@
 package co.edu.uniquindio.techparkuq.modelo;
+
 import co.edu.uniquindio.techparkuq.modelo.abstractas.Atraccion;
 import co.edu.uniquindio.techparkuq.modelo.enums.EstadoAtraccion;
-
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Zona {
+public class Zona implements Serializable {
 
-
+    private static final long serialVersionUID = 1L;
     private String nombre;
     private int capacidadMaxima;
     private int aforoActual;
-    private List<Atraccion> listaAtracciones = new ArrayList<>();
+    private List<Atraccion> listaAtracciones;
     private List<Operador> listOperadores;
-
 
     public Zona(String nombre, int capacidadMaxima) {
         this.nombre = nombre;
@@ -23,19 +23,16 @@ public class Zona {
         this.listOperadores = new ArrayList<>();
     }
 
-
     public boolean verificarAforo() {
         return aforoActual < capacidadMaxima;
     }
-
-
-
 
     public void agregarAtraccion(Atraccion atraccion) {
         if (atraccion != null) {
             listaAtracciones.add(atraccion);
         }
     }
+
     public Atraccion buscarAtraccion(String nombreAtraccion) {
         for (Atraccion a : listaAtracciones) {
             if (a.getNombre().equalsIgnoreCase(nombreAtraccion)) {

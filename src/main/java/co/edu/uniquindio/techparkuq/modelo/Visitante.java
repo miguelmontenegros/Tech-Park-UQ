@@ -1,34 +1,35 @@
 package co.edu.uniquindio.techparkuq.modelo;
+
 import co.edu.uniquindio.techparkuq.modelo.abstractas.Ticket;
 import co.edu.uniquindio.techparkuq.modelo.abstractas.Atraccion;
 import co.edu.uniquindio.techparkuq.modelo.abstractas.Persona;
 import co.edu.uniquindio.techparkuq.modelo.interfaces.INotificable;
-
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Visitante extends Persona implements INotificable {
+public class Visitante extends Persona implements INotificable, Serializable {
 
-private int edad;
-private double estatura;
-private double saldoVirtual;
-private String fotografia;
-private List<String> historialVisitas;
-private List<Atraccion> listaFavoritos;
-private Ticket ticket;
-private List<String> notificaciones;
+    private static final long serialVersionUID = 1L;
+    private int edad;
+    private double estatura;
+    private double saldoVirtual;
+    private String fotografia;
+    private List<String> historialVisitas;
+    private List<Atraccion> listaFavoritos;
+    private Ticket ticket;
+    private List<String> notificaciones;
 
-
-public Visitante(String nombre, String documento, int edad, double estatura, String fotografia){
-    super(nombre, documento);
-    this.edad = edad;
-    this.estatura=estatura;
-    this.saldoVirtual=0.0;
-    this.fotografia=fotografia;
-    this.historialVisitas = new ArrayList<>();
-    this.listaFavoritos=new ArrayList<>();
-    this.notificaciones = new ArrayList<>();
-}
+    public Visitante(String nombre, String documento, int edad, double estatura, String fotografia){
+        super(nombre, documento);
+        this.edad = edad;
+        this.estatura=estatura;
+        this.saldoVirtual=0.0;
+        this.fotografia=fotografia;
+        this.historialVisitas = new ArrayList<>();
+        this.listaFavoritos=new ArrayList<>();
+        this.notificaciones = new ArrayList<>();
+    }
 
     public void agregarFavorito(Atraccion atraccion) {
         if (atraccion != null && !listaFavoritos.contains(atraccion)) {
@@ -125,11 +126,10 @@ public Visitante(String nombre, String documento, int edad, double estatura, Str
         return notificaciones;
     }
 
-
     @Override
     public String toString(){
-    return "Nombre: "+ getNombre() + "\n Documento: " + getDocumento() + "\n Edad: "+ edad
-            +"\n Estatura: "+ estatura + "\n Saldo Virtual: "+ saldoVirtual
-            +"\n Fotografia: "+ fotografia;
+        return "Nombre: "+ getNombre() + "\n Documento: " + getDocumento() + "\n Edad: "+ edad
+                +"\n Estatura: "+ estatura + "\n Saldo Virtual: "+ saldoVirtual
+                +"\n Fotografia: "+ fotografia;
     }
 }

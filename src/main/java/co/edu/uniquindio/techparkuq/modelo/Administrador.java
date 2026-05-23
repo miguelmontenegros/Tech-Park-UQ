@@ -1,12 +1,14 @@
 package co.edu.uniquindio.techparkuq.modelo;
+
 import co.edu.uniquindio.techparkuq.modelo.abstractas.Empleado;
 import co.edu.uniquindio.techparkuq.modelo.enums.AlertaClimatica;
 import co.edu.uniquindio.techparkuq.modelo.interfaces.IGestionable;
 import co.edu.uniquindio.techparkuq.modelo.abstractas.Atraccion;
-import co.edu.uniquindio.techparkuq.modelo.interfaces.IMantenible;
+import java.io.Serializable;
 
-public class Administrador extends Empleado implements IGestionable{
+public class Administrador extends Empleado implements IGestionable, Serializable {
 
+    private static final long serialVersionUID = 1L;
     private String nivelAcceso;
     private Parque parque;
 
@@ -20,22 +22,21 @@ public class Administrador extends Empleado implements IGestionable{
         if (operador != null && zona != null) {
             operador.setZonaAsignada(zona);
             zona.getListOperadores().add(operador);
-            System.out.println("LOG: Operador " + operador.getNombre() + " asignado a " + zona.getNombre());
         }
     }
+
     public void activarAlertaClima(AlertaClimatica alerta) {
         if (parque != null && alerta != null) {
             parque.cambiarEstadoClima(alerta);
-            System.out.println("ALERTA: El administrador ha cambiado el clima a " + alerta);
         }
     }
+
     public Reporte generarReporte() {
         if (parque != null) {
             return new Reporte(parque.getIngresosDiarios(), 5, 2);
         }
         return null;
     }
-
 
     @Override
     public void crearAtraccion(Atraccion atraccion, String nombreZona) {
@@ -57,8 +58,12 @@ public class Administrador extends Empleado implements IGestionable{
             parque.crearZona(zona);
         }
     }
+
     public String getNivelAcceso() { return nivelAcceso; }
+
     public void setNivelAcceso(String nivelAcceso) { this.nivelAcceso = nivelAcceso; }
+
     public Parque getParque() { return parque; }
+
     public void setParque(Parque parque) { this.parque = parque; }
 }

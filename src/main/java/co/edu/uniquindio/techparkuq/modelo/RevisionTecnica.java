@@ -1,16 +1,15 @@
 package co.edu.uniquindio.techparkuq.modelo;
 
 import java.time.LocalDate;
+import java.io.Serializable;
 
+public class RevisionTecnica implements Serializable {
 
-public class RevisionTecnica {
-
-
+    private static final long serialVersionUID = 1L;
     private String idRevision;
     private LocalDate fecha;
     private String observaciones;
     private boolean exitosa;
-
 
     public RevisionTecnica(String idRevision, LocalDate fecha, String observaciones, boolean exitosa) {
         this.idRevision = idRevision;
@@ -50,7 +49,6 @@ public class RevisionTecnica {
     public void setExitosa(boolean exitosa) {
         this.exitosa = exitosa;
     }
-
 
     @Override
     public String toString() {

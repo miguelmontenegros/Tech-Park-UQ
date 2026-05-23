@@ -2,9 +2,11 @@ package co.edu.uniquindio.techparkuq.modelo;
 
 import co.edu.uniquindio.techparkuq.modelo.abstractas.Atraccion;
 import co.edu.uniquindio.techparkuq.modelo.enums.AlertaClimatica;
+import java.io.Serializable;
 
-public class AtraccionShow extends Atraccion {
+public class AtraccionShow extends Atraccion implements Serializable {
 
+    private static final long serialVersionUID = 1L;
     private String horarioFuncion;
 
     public AtraccionShow(String idUnico, String nombre, int capacidadMaximaCiclo, double alturaMinima, int edadMinima, double costoAdicional, String horarioFuncion) {

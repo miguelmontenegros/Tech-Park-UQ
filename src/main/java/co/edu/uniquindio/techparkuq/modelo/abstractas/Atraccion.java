@@ -4,10 +4,11 @@ import co.edu.uniquindio.techparkuq.modelo.Visitante;
 import co.edu.uniquindio.techparkuq.modelo.ColaVirtual;
 import co.edu.uniquindio.techparkuq.modelo.enums.EstadoAtraccion;
 import co.edu.uniquindio.techparkuq.modelo.enums.AlertaClimatica;
+import java.io.Serializable;
 
+public abstract class Atraccion implements Serializable {
 
-public abstract class   Atraccion {
-
+    private static final long serialVersionUID = 1L;
     private String idUnico;
     private String nombre;
     private int capacidadMaximaCiclo;
@@ -21,7 +22,6 @@ public abstract class   Atraccion {
     private boolean activo;
     private ColaVirtual colaVirtual;
     private static final int LIMITE_VISITANTES_MANTENIMIENTO = 500;
-
 
     public Atraccion(String idUnico, String nombre, int capacidadMaximaCiclo, double alturaMinima,
                      int edadMinima, double costoAdicional) {
@@ -39,9 +39,7 @@ public abstract class   Atraccion {
         this.colaVirtual = new ColaVirtual();
     }
 
-
     public boolean validarRestricciones(Visitante visitante) {
-
         if (visitante.getEdad() < this.edadMinima) {
             return false;
         }
@@ -51,25 +49,20 @@ public abstract class   Atraccion {
         if (this.estado != EstadoAtraccion.ACTIVA) {
             return false;
         }
-
         return true;
     }
-
 
     public void actualizarEstado(EstadoAtraccion nuevoEstado, String motivo) {
         this.estado = nuevoEstado;
         this.motivoCierre = motivo;
     }
 
-
     public void registrarIngresoVisitante() {
         if (this.estado == EstadoAtraccion.ACTIVA) {
             this.contadorVisitantesAcumulado++;
-
-
             if (requiereMantenimiento()) {
                 actualizarEstado(EstadoAtraccion.EN_MANTENIMIENTO, "Límite de 500 visitantes alcanzado. Bloqueo preventivo.");
-                System.out.println(" ALERTA: La atracción " + this.nombre + " ha pasado a mantenimiento automático.");
+                System.out.println("ALERTA: La atracción " + this.nombre + " ha pasado a mantenimiento automático.");
             }
         }
     }
@@ -78,11 +71,9 @@ public abstract class   Atraccion {
         this.contadorVisitantesAcumulado = 0;
     }
 
-
     public boolean requiereMantenimiento() {
         return this.contadorVisitantesAcumulado >= LIMITE_VISITANTES_MANTENIMIENTO;
     }
-
 
     public void registrarRevisionTecnica() {
         resetearContadorVisitantes();
@@ -90,9 +81,7 @@ public abstract class   Atraccion {
         System.out.println("TÉCNICO: Revisión completada en " + this.nombre + ". Operativa nuevamente.");
     }
 
-
     public abstract void reaccionarAlClima(AlertaClimatica alerta);
-
 
     public String getIdUnico() {
         return idUnico;
@@ -196,5 +185,4 @@ public abstract class   Atraccion {
                 ", estado=" + estado +
                 '}';
     }
-
 }
