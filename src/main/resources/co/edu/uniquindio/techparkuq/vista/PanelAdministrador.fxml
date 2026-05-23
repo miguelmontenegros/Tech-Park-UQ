@@ -165,8 +165,11 @@
 
                     <Separator />
 
-                    <Label style="-fx-font-size: 15; -fx-font-weight: bold;" text="Reporte General del Parque" />
-                    <Button onAction="#onGenerarReporte" prefWidth="200" style="-fx-background-color: #00542E; -fx-text-fill: white; -fx-font-weight: bold;" text="Generar Reporte" />
+                    <Label style="-fx-font-size: 15; -fx-font-weight: bold;" text="Reportes y Análisis" />
+                    <HBox spacing="10">
+                        <Button onAction="#onGenerarReporte" prefWidth="200" style="-fx-background-color: #00542E; -fx-text-fill: white; -fx-font-weight: bold;" text="Generar Reporte General" />
+                        <Button onAction="#onVerEstadisticas" prefWidth="200" style="-fx-background-color: #3949AB; -fx-text-fill: white; -fx-font-weight: bold;" text="Ver Estadísticas Avanzadas" />
+                    </HBox>
                     <TextArea fx:id="areaReporte" editable="false" prefHeight="260" promptText="El reporte aparecerá aquí..." style="-fx-font-family: monospace; -fx-font-size: 12;" />
                 </VBox>
             </Tab>

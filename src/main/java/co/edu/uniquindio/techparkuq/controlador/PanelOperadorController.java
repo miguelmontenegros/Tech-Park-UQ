@@ -60,6 +60,12 @@ public class PanelOperadorController {
         cmbNuevoEstado.setItems(FXCollections.observableArrayList(EstadoAtraccion.values()));
     }
 
+    private void refrescarUI() {
+        tblMisAtracciones.refresh();
+        cargarAtracciones();
+        refrescarVistaCola();
+    }
+
     public void setOperador(Operador operador) {
         this.operador = operador;
         actualizarVista();
@@ -143,9 +149,10 @@ public class PanelOperadorController {
             String motivo = txtMotivoCierre.getText().trim();
             a.setMotivoCierre(motivo.isEmpty() ? "Cerrada por operador." : motivo);
         }
+        ModelFactoryController.getInstance().guardarDatosSerializable();
+        refrescarUI();
         lblEstadoActual.setText(nuevo.toString());
         lblResultadoControl.setText("Estado actualizado a: " + nuevo);
-        cargarAtracciones();
     }
 
     @FXML
@@ -168,12 +175,13 @@ public class PanelOperadorController {
         Atraccion a = cmbMantAtraccion.getValue();
         if (a == null) { alerta("Sin selección", "Seleccione una atracción."); return; }
         a.registrarRevisionTecnica();
+        ModelFactoryController.getInstance().guardarDatosSerializable();
+        refrescarUI();
         areaLogMant.appendText("• Revisión completada: " + a.getNombre() + "  |  Fecha: " + java.time.LocalDate.now() + "\n");
         lblMantEstado.setText(a.getEstado().toString());
         lblMantContador.setText(String.valueOf(a.getContadorUso()));
         lblNecesitaRevision.setText("No");
         lblNecesitaRevision.setStyle("-fx-text-fill: #2E7D32; -fx-font-weight: bold;");
-        cargarAtracciones();
         info("Revisión registrada", a.getNombre() + " vuelve a estado ACTIVA.");
     }
 
@@ -190,7 +198,8 @@ public class PanelOperadorController {
             lblResultadoAcceso.setText("✓ ACCESO PERMITIDO  — " + v.getNombre());
             lblResultadoAcceso.setStyle("-fx-text-fill: #2E7D32; -fx-font-weight: bold; -fx-font-size: 14;");
             parque.registrarUsoAtraccion(v, a);
-            cargarAtracciones();
+            ModelFactoryController.getInstance().guardarDatosSerializable();
+            refrescarUI();
         } else {
             lblResultadoAcceso.setText("✗ ACCESO DENEGADO  — " + v.getNombre());
             lblResultadoAcceso.setStyle("-fx-text-fill: #c62828; -fx-font-weight: bold; -fx-font-size: 14;");
@@ -226,9 +235,10 @@ public class PanelOperadorController {
             return;
         }
         cola.agregarVisitante(v);
+        ModelFactoryController.getInstance().guardarDatosSerializable();
+        refrescarVistaCola();
         lblColaResultado.setText("✓ " + v.getNombre() + " agregado a la cola de " + a.getNombre());
         lblColaResultado.setStyle("-fx-text-fill: #2E7D32; -fx-font-weight: bold;");
-        refrescarVistaCola();
     }
 
     @FXML
@@ -241,7 +251,8 @@ public class PanelOperadorController {
             lblColaResultado.setText("✓ Atendiendo a: " + siguiente.getNombre() + "  |  Ticket: " + siguiente.getTicket().getClass().getSimpleName());
             lblColaResultado.setStyle("-fx-text-fill: #00542E; -fx-font-weight: bold;");
             parque.registrarUsoAtraccion(siguiente, a);
-            cargarAtracciones();
+            ModelFactoryController.getInstance().guardarDatosSerializable();
+            refrescarUI();
         } else {
             lblColaResultado.setText("La cola está vacía.");
             lblColaResultado.setStyle("-fx-text-fill: #666;");

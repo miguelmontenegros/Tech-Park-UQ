@@ -1,5 +1,6 @@
 package co.edu.uniquindio.techparkuq.controlador;
 
+import co.edu.uniquindio.techparkuq.modelo.*;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.collections.FXCollections;
@@ -9,32 +10,29 @@ import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-
 import java.time.LocalDate;
 
 public class DialogoPagoController {
 
-    @FXML private Label            lblMontoMostrar;
-    @FXML private TextField        txtNumTarjeta;
-    @FXML private TextField        txtNombreTitular;
-    @FXML private TextField        txtVencimiento;
-    @FXML private TextField        txtCvv;
+    @FXML private Label lblMontoMostrar;
+    @FXML private TextField txtNumTarjeta;
+    @FXML private TextField txtNombreTitular;
+    @FXML private TextField txtVencimiento;
+    @FXML private TextField txtCvv;
     @FXML private ComboBox<String> cmbTipoTarjeta;
-    @FXML private VBox             panelProcesando;
-    @FXML private ProgressBar      progressPago;
-    @FXML private Label            lblEstadoPago;
-    @FXML private Label            lblMensaje;
-    @FXML private Button           btnPagar;
+    @FXML private VBox panelProcesando;
+    @FXML private ProgressBar progressPago;
+    @FXML private Label lblEstadoPago;
+    @FXML private Label lblMensaje;
+    @FXML private Button btnPagar;
 
-    private double   monto;
-    private boolean  pagoAprobado = false;
+    private double monto;
+    private boolean pagoAprobado = false;
     private Runnable onAprobado;
 
     @FXML
     void initialize() {
-        cmbTipoTarjeta.setItems(FXCollections.observableArrayList(
-                "Visa", "Mastercard", "American Express", "PSE"));
-
+        cmbTipoTarjeta.setItems(FXCollections.observableArrayList("Visa", "Mastercard", "American Express", "PSE"));
         progressPago.setProgress(ProgressBar.INDETERMINATE_PROGRESS);
 
         txtNumTarjeta.textProperty().addListener((obs, viejo, nuevo) -> {
@@ -90,13 +88,13 @@ public class DialogoPagoController {
     @FXML
     void onPagar(ActionEvent event) {
         String numTarjeta = txtNumTarjeta.getText().replaceAll("\\s", "");
-        String nombre     = txtNombreTitular.getText().trim();
-        String venc       = txtVencimiento.getText().trim();
-        String cvv        = txtCvv.getText().trim();
-        String tipo       = cmbTipoTarjeta.getValue();
+        String nombre = txtNombreTitular.getText().trim();
+        String venc = txtVencimiento.getText().trim();
+        String cvv = txtCvv.getText().trim();
+        String tipo = cmbTipoTarjeta.getValue();
 
         if (numTarjeta.length() < 16) {
-            mostrarError("Numero de tarjeta invalido. Debe tener 16 digitos.");
+            mostrarError("Numero de tarjeta invalido.");
             return;
         }
         if (nombre.isEmpty()) {
@@ -104,11 +102,11 @@ public class DialogoPagoController {
             return;
         }
         if (!venc.matches("\\d{2}/\\d{2}")) {
-            mostrarError("Fecha de vencimiento invalida. Use el formato MM/AA.");
+            mostrarError("Fecha invalida. Formato MM/AA.");
             return;
         }
         if (cvv.length() < 3) {
-            mostrarError("CVV invalido. Debe tener al menos 3 digitos.");
+            mostrarError("CVV invalido.");
             return;
         }
         if (tipo == null) {
@@ -117,19 +115,18 @@ public class DialogoPagoController {
         }
 
         try {
-            int mes  = Integer.parseInt(venc.substring(0, 2));
+            int mes = Integer.parseInt(venc.substring(0, 2));
             int anio = Integer.parseInt(venc.substring(3)) + 2000;
             LocalDate hoy = LocalDate.now();
-            if (mes < 1 || mes > 12) { mostrarError("Mes de vencimiento invalido."); return; }
+            if (mes < 1 || mes > 12) { mostrarError("Mes invalido."); return; }
             if (anio < hoy.getYear() || (anio == hoy.getYear() && mes < hoy.getMonthValue())) {
                 mostrarError("La tarjeta esta vencida.");
                 return;
             }
         } catch (NumberFormatException e) {
-            mostrarError("Fecha de vencimiento invalida.");
+            mostrarError("Fecha invalida.");
             return;
         }
-
         iniciarSimulacion();
     }
 
@@ -145,10 +142,10 @@ public class DialogoPagoController {
         panelProcesando.setManaged(true);
 
         String[] pasos = {
-            "Conectando con el banco...",
-            "Verificando datos de la tarjeta...",
-            "Autorizando la transaccion...",
-            "Confirmando pago..."
+                "Conectando con el banco...",
+                "Verificando datos de la tarjeta...",
+                "Autorizando la transaccion...",
+                "Confirmando pago..."
         };
 
         Timeline tl = new Timeline();
@@ -175,7 +172,6 @@ public class DialogoPagoController {
                 cerrarVentana();
             });
         }));
-
         tl.play();
     }
 

@@ -8,6 +8,7 @@ import co.edu.uniquindio.techparkuq.modelo.interfaces.IGestionable;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Comparator;
 
 public class Parque implements IGestionable, Serializable {
 
@@ -44,180 +45,123 @@ public class Parque implements IGestionable, Serializable {
 
     public boolean admitirVisitante(Visitante v) {
         if (visitantesActivos.size() >= capacidadMaxima) {
-            System.out.println("Aforo máximo del parque alcanzado.");
             return false;
         }
         visitantesActivos.add(v);
-        System.out.println(v.getNombre() + " ha ingresado al parque.");
         return true;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public List<Zona> getListaZonas() {
-        return listaZonas;
-    }
-
-    public void setListaZonas(List<Zona> listaZonas) {
-        this.listaZonas = listaZonas;
-    }
-
-    public List<Empleado> getListaEmpleados() {
-        return listaEmpleados;
-    }
-
-    public void setListaEmpleados(List<Empleado> listaEmpleados) {
-        this.listaEmpleados = listaEmpleados;
-    }
-
-    public List<Visitante> getListaVisitantes() {
-        return visitantesActivos;
-    }
-
-    public void setListaVisitantes(List<Visitante> listaVisitantes) {
-        this.visitantesActivos = listaVisitantes;
-    }
-
-    public List<Atraccion> getListaAtracciones() {
-        return obtenerTodasLasAtracciones();
-    }
-
-    public double getIngresosDiarios() { return ingresosDiarios; }
-
-    @Override
-    public String toString() {
-        return "Parque: " + nombre + " \n" +
-                "Zonas registradas: " + listaZonas.size() + "\n" +
-                "Nómina de Empleados: " + listaEmpleados.size() + "\n" +
-                "Visitantes actuales: " + visitantesActivos.size();
-    }
-
-    public boolean validarAcceso(Visitante v, Atraccion a) {
-        if (!a.validarRestricciones(v)) {
-            System.out.println("Acceso denegado: El visitante no cumple requisitos o la atracción " + a.getNombre() + " no está activa.");
-            return false;
-        }
-        return true;
-    }
-
-    public void registrarUsoAtraccion(Visitante v, Atraccion a) {
-        if (validarAcceso(v, a)) {
-            a.registrarIngresoVisitante();
-            v.registrarVisita(a.getNombre());
-            System.out.println("Registro exitoso: " + v.getNombre() + " ingresó a " + a.getNombre());
-        }
-    }
-
-    public List<Atraccion> obtenerTodasLasAtracciones() {
-        List<Atraccion> todas = new ArrayList<>();
-        for (Zona z : listaZonas) {
-            todas.addAll(z.getListaAtracciones());
-        }
-        return todas;
-    }
-
-    public Atraccion buscarAtraccionPorNombre(String nombreAtraccion) {
-        for (Zona zona : listaZonas) {
-            for (Atraccion atraccion : zona.getListaAtracciones()) {
-                if (atraccion.getNombre().equalsIgnoreCase(nombreAtraccion)) {
-                    System.out.println("Atracción encontrada en la zona: " + zona.getNombre());
-                    return atraccion;
-                }
-            }
-        }
-        System.out.println("La atracción '" + nombreAtraccion + "' no se encuentra en el parque.");
-        return null;
     }
 
     public void cambiarEstadoClima(AlertaClimatica nuevaAlerta) {
         this.estadoClima = nuevaAlerta;
-        System.out.println("\nSISTEMA CLIMA: Alerta cambiada a " + nuevaAlerta);
+
         for (Zona zona : listaZonas) {
             for (Atraccion atr : zona.getListaAtracciones()) {
+                if (nuevaAlerta != AlertaClimatica.NINGUNA) {
+                    if (atr instanceof AtraccionAcuatica || atr.isAltoRiesgo()) {
+                        atr.actualizarEstado(EstadoAtraccion.CERRADA, "Cierre automático: " + nuevaAlerta);
+                    }
+                } else {
+                    atr.actualizarEstado(EstadoAtraccion.ACTIVA, "");
+                }
                 atr.reaccionarAlClima(nuevaAlerta);
             }
         }
-        if (nuevaAlerta != AlertaClimatica.NINGUNA) {
-            String msg = "Alerta climática activa: " + nuevaAlerta
-                    + ". Algunas atracciones pueden estar cerradas por seguridad.";
-            notificarVisitantes(msg);
-        } else {
-            notificarVisitantes("Clima normalizado. Todas las atracciones disponibles han vuelto a operar.");
-        }
+
+        String msg = (nuevaAlerta != AlertaClimatica.NINGUNA)
+                ? "Alerta climática activa: " + nuevaAlerta + ". Atracciones de riesgo cerradas."
+                : "Clima normalizado. Todas las atracciones operativas.";
+        notificarVisitantes(msg);
     }
 
     public void notificarVisitantes(String mensaje) {
         for (Visitante v : visitantesActivos) {
             if (v.getTicket() != null && v.getTicket().isActivo()) {
-                v.recibirNotificacion(mensaje);
                 v.agregarNotificacion(mensaje);
             }
         }
     }
 
-    public void notificarInicioShow(AtraccionShow show) {
-        String msg = "¡El show '" + show.getNombre() + "' comenzará pronto! Horario: " + show.getHorarioFuncion();
-        for (Visitante v : visitantesActivos) {
-            if (v.getTicket() != null && v.getTicket().isActivo()) {
-                boolean esFavorito = v.getListaFavoritos().contains(show);
-                if (esFavorito) {
-                    v.recibirNotificacion(msg);
-                    v.agregarNotificacion(msg);
-                }
-            }
-        }
+    public List<Atraccion> getListaAtracciones() {
+        List<Atraccion> todas = new ArrayList<>();
+        for (Zona z : listaZonas) todas.addAll(z.getListaAtracciones());
+        return todas;
     }
+
+    public String getNombre() { return nombre; }
+    public void setNombre(String nombre) { this.nombre = nombre; }
+    public List<Zona> getListaZonas() { return listaZonas; }
+    public void setListaZonas(List<Zona> listaZonas) { this.listaZonas = listaZonas; }
+    public List<Empleado> getListaEmpleados() { return listaEmpleados; }
+    public void setListaEmpleados(List<Empleado> listaEmpleados) { this.listaEmpleados = listaEmpleados; }
+    public List<Visitante> getListaVisitantes() { return visitantesActivos; }
+    public void setListaVisitantes(List<Visitante> listaVisitantes) { this.visitantesActivos = listaVisitantes; }
+    public double getIngresosDiarios() { return ingresosDiarios; }
 
     @Override
     public void eliminarAtraccion(String idUnico) {
-        if (idUnico == null) return;
-        boolean encontrada = false;
-        for (Zona zona : listaZonas) {
-            for (Atraccion atr : zona.getListaAtracciones()) {
-                if (atr.getIdUnico().equals(idUnico)) {
-                    atr.setEstado(EstadoAtraccion.CERRADA);
-                    atr.setMotivoCierre("Atracción deshabilitada por administración.");
-                    encontrada = true;
-                    break;
-                }
-            }
-            if (encontrada) break;
+        for (Zona z : listaZonas) {
+            z.eliminarAtraccion(idUnico);
         }
-        System.out.println("LOG: Proceso de eliminación finalizado para ID: " + idUnico);
     }
 
     @Override
     public void crearZona(Zona zona) {
-        if (zona != null) {
-            listaZonas.add(zona);
-            System.out.println("Zona '" + zona.getNombre() + "' creada y registrada.");
-        }
+        if (zona != null) listaZonas.add(zona);
     }
 
     @Override
     public void crearAtraccion(Atraccion atraccion, String nombreZona) {
-        if (atraccion == null) {
-            System.out.println("Error: Atracción nula.");
-            return;
-        }
-        Zona zonaDestino = null;
         for (Zona z : listaZonas) {
             if (z.getNombre().equalsIgnoreCase(nombreZona)) {
-                zonaDestino = z;
-                break;
+                z.agregarAtraccion(atraccion);
+                return;
             }
         }
-        if (zonaDestino != null) {
-            zonaDestino.agregarAtraccion(atraccion);
-            System.out.println("Atracción '" + atraccion.getNombre() + "' registrada con éxito en la zona: " + nombreZona);
-        } else {
-            System.out.println("Error: La zona '" + nombreZona + "' no existe. No se pudo asignar la atracción.");
+    }
+
+    public void registrarUsoAtraccion(Visitante v, Atraccion a) {
+        if (a.validarRestricciones(v)) {
+            a.registrarIngresoVisitante();
+            v.registrarVisita(a.getNombre());
         }
+    }
+
+    // --- ESTADÍSTICAS AVANZADAS MEJORADAS ---
+    public String generarReporteEstadistico() {
+        List<Atraccion> todas = getListaAtracciones();
+
+        Atraccion popular = todas.stream()
+                .max(Comparator.comparingInt(Atraccion::getContadorUso))
+                .orElse(null);
+
+        int totalEnEspera = todas.stream()
+                .mapToInt(a -> a.getColaVirtual().getListEspera().size())
+                .sum();
+
+        long cerradas = todas.stream()
+                .filter(a -> a.getEstado() == EstadoAtraccion.CERRADA)
+                .count();
+
+        double promedioEspera = todas.stream()
+                .mapToInt(Atraccion::getTiempoEsperaEstimado)
+                .average()
+                .orElse(0.0);
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("=== ESTADÍSTICAS AVANZADAS ===\n\n");
+        sb.append("• Atracción estrella: ").append(popular != null ? popular.getNombre() : "N/A")
+                .append(" (").append(popular != null ? popular.getContadorUso() : 0).append(" usos)\n");
+        sb.append("• Atracciones fuera de servicio: ").append(cerradas).append("\n");
+        sb.append("• Total personas en colas: ").append(totalEnEspera).append("\n");
+        sb.append("• Promedio espera general: ").append(String.format("%.2f", promedioEspera)).append(" min\n\n");
+
+        sb.append("=== USO POR ATRACCIÓN ===\n");
+        for(Atraccion a : todas) {
+            sb.append("- ").append(a.getNombre()).append(": ")
+                    .append(a.getContadorUso()).append(" usos | ")
+                    .append(a.getColaVirtual().getListEspera().size()).append(" en cola\n");
+        }
+
+        return sb.toString();
     }
 }

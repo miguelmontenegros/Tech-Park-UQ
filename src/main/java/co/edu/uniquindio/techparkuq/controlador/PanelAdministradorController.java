@@ -116,6 +116,13 @@ public class PanelAdministradorController {
         });
     }
 
+    private void refrescarUI() {
+        tblEmpleados.refresh();
+        tblZonas.refresh();
+        tblAtracciones.refresh();
+        tblAsignaciones.refresh();
+    }
+
     private void configurarTablaEmpleados() {
         colEmpNombre.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getNombre()));
         colEmpDocumento.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getDocumento()));
@@ -251,9 +258,11 @@ public class PanelAdministradorController {
         try {
             int edad = Integer.parseInt(edadStr);
             parque.contratarEmpleado(new Operador(nombre, doc, edad));
+            ModelFactoryController.getInstance().guardarDatosSerializable();
             cargarEmpleados();
             actualizarCombosOperador();
             limpiarFormEmp();
+            refrescarUI();
             info("Operador contratado", nombre + " registrado en el sistema.");
         } catch (NumberFormatException ex) {
             alerta("Error", "La edad debe ser un número entero.");
@@ -278,10 +287,8 @@ public class PanelAdministradorController {
             int edad = Integer.parseInt(edadStr);
             sel.setNombre(nombre);
             sel.setEdad(edad);
-
-            tblEmpleados.refresh();
-            tblAsignaciones.refresh();
-
+            ModelFactoryController.getInstance().guardarDatosSerializable();
+            refrescarUI();
             limpiarFormEmp();
             info("Éxito", "Datos del empleado actualizados.");
         } catch (NumberFormatException ex) {
@@ -297,10 +304,11 @@ public class PanelAdministradorController {
             op.getZonaAsignada().getListOperadores().remove(op);
         }
         parque.getListaEmpleados().remove(sel);
+        ModelFactoryController.getInstance().guardarDatosSerializable();
         cargarEmpleados();
         cargarAsignaciones();
         actualizarCombosOperador();
-        tblZonas.refresh();
+        refrescarUI();
         limpiarFormEmp();
         info("Éxito", "Empleado desvinculado del sistema.");
     }
@@ -315,8 +323,10 @@ public class PanelAdministradorController {
         }
         try {
             parque.crearZona(new Zona(nombre, Integer.parseInt(capStr)));
+            ModelFactoryController.getInstance().guardarDatosSerializable();
             cargarZonas();
             cargarAtracciones();
+            refrescarUI();
             limpiarFormZona();
             info("Zona creada", "La zona '" + nombre + "' fue registrada.");
         } catch (NumberFormatException ex) {
@@ -342,12 +352,8 @@ public class PanelAdministradorController {
             int cap = Integer.parseInt(capStr);
             sel.setNombre(nombre);
             sel.setCapacidadMaxima(cap);
-
-            tblZonas.refresh();
-            tblAtracciones.refresh();
-            tblAsignaciones.refresh();
-            actualizarCombosZona();
-
+            ModelFactoryController.getInstance().guardarDatosSerializable();
+            refrescarUI();
             limpiarFormZona();
             info("Éxito", "Zona actualizada correctamente.");
         } catch (NumberFormatException ex) {
@@ -364,8 +370,10 @@ public class PanelAdministradorController {
             return;
         }
         parque.getListaZonas().remove(sel);
+        ModelFactoryController.getInstance().guardarDatosSerializable();
         cargarZonas();
         cargarAtracciones();
+        refrescarUI();
         limpiarFormZona();
         info("Éxito", "Zona eliminada del sistema.");
     }
@@ -398,8 +406,10 @@ public class PanelAdministradorController {
 
             Atraccion nueva = crearPorTipo(tipo, id, nombre, cap, altMin, edMin, costo);
             parque.crearAtraccion(nueva, zonaNombre);
+            ModelFactoryController.getInstance().guardarDatosSerializable();
             cargarAtracciones();
             cargarZonas();
+            refrescarUI();
             limpiarFormAtr();
             info("Atracción creada", "'" + nombre + "' registrada en " + zonaNombre + ".");
         } catch (NumberFormatException ex) {
@@ -447,10 +457,8 @@ public class PanelAdministradorController {
             sel.setAlturaMinima(altMin);
             sel.setEdadMinima(edMin);
             sel.setCostoAdicional(costo);
-
-            tblAtracciones.refresh();
-            tblZonas.refresh();
-
+            ModelFactoryController.getInstance().guardarDatosSerializable();
+            refrescarUI();
             limpiarFormAtr();
             info("Éxito", "Atracción actualizada en el sistema.");
         } catch (NumberFormatException ex) {
@@ -472,9 +480,8 @@ public class PanelAdministradorController {
         Atraccion sel = tblAtracciones.getSelectionModel().getSelectedItem();
         if (sel == null) { alerta("Sin selección", "Seleccione una atracción."); return; }
         parque.eliminarAtraccion(sel.getIdUnico());
-
-        tblAtracciones.refresh();
-
+        ModelFactoryController.getInstance().guardarDatosSerializable();
+        refrescarUI();
         limpiarFormAtr();
         info("Atracción deshabilitada", "Estado cambiado a CERRADA.");
     }
@@ -494,22 +501,17 @@ public class PanelAdministradorController {
         zona.getListOperadores().add(op);
         op.getListAtraccionesGestionadas().clear();
         op.getListAtraccionesGestionadas().addAll(zona.getListaAtracciones());
-
-        tblEmpleados.refresh();
-        tblAsignaciones.refresh();
-        tblZonas.refresh();
-
+        ModelFactoryController.getInstance().guardarDatosSerializable();
+        refrescarUI();
         info("Asignación exitosa", op.getNombre() + " asignado a " + zona.getNombre() + ".");
     }
 
     @FXML
     void onDesdesasignarOperador(ActionEvent event) {
         Operador op = tblAsignaciones.getSelectionModel().getSelectedItem();
+        if (op == null) op = cmbAsigOperador.getValue();
         if (op == null) {
-            op = cmbAsigOperador.getValue();
-        }
-        if (op == null) {
-            alerta("Sin selección", "Seleccione un operador de la tabla de asignaciones o del combo.");
+            alerta("Sin selección", "Seleccione un operador de la tabla.");
             return;
         }
         Zona zona = op.getZonaAsignada();
@@ -520,12 +522,9 @@ public class PanelAdministradorController {
         zona.getListOperadores().remove(op);
         op.setZonaAsignada(null);
         op.getListAtraccionesGestionadas().clear();
-
-        tblEmpleados.refresh();
-        tblAsignaciones.refresh();
-        tblZonas.refresh();
-
-        info("Desasignación exitosa", op.getNombre() + " ha sido desvinculado de la zona " + zona.getNombre() + ".");
+        ModelFactoryController.getInstance().guardarDatosSerializable();
+        refrescarUI();
+        info("Desasignación exitosa", op.getNombre() + " desvinculado.");
     }
 
     @FXML
@@ -533,8 +532,9 @@ public class PanelAdministradorController {
         AlertaClimatica alerta = cmbClima.getValue();
         if (alerta == null) { alerta("Sin selección", "Seleccione un tipo de alerta."); return; }
         parque.cambiarEstadoClima(alerta);
+        ModelFactoryController.getInstance().guardarDatosSerializable();
         actualizarEtiquetaClima();
-        cargarAtracciones();
+        refrescarUI();
         info("Alerta activada", "Clima cambiado a: " + alerta);
     }
 
@@ -551,27 +551,15 @@ public class PanelAdministradorController {
         sb.append("\n------ DETALLE POR ZONA ------\n");
 
         for (Zona z : parque.getListaZonas()) {
-            sb.append("\n[").append(z.getNombre()).append("]")
-                    .append(" Cap:").append(z.getCapacidadMaxima())
-                    .append(" Atr:").append(z.getListaAtracciones().size())
-                    .append(" Op:").append(z.getListOperadores().size()).append("\n");
+            sb.append("\n[").append(z.getNombre()).append("]\n");
             for (Atraccion a : z.getListaAtracciones()) {
-                sb.append(" • ").append(a.getNombre())
-                        .append(" [").append(a.getEstado()).append("]")
-                        .append(" Visitantes: ").append(a.getContadorUso());
-                if (a.requiereMantenimiento()) sb.append(" ⚠ MANTENIMIENTO");
-                sb.append("\n");
+                sb.append(" • ").append(a.getNombre()).append(" [").append(a.getEstado()).append("]\n");
             }
         }
-        sb.append("\n------ ALERTAS DE MANTENIMIENTO ------\n");
-        boolean hay = false;
-        for (Atraccion a : parque.getListaAtracciones()) {
-            if (a.getEstado() == EstadoAtraccion.EN_MANTENIMIENTO) {
-                sb.append(" ⚠ ").append(a.getNombre()).append(" — en mantenimiento preventivo\n");
-                hay = true;
-            }
-        }
-        if (!hay) sb.append(" Sin alertas de mantenimiento.\n");
+
+        // --- AQUÍ ESTÁ LA INTEGRACIÓN DE LAS ESTADÍSTICAS AVANZADAS ---
+        sb.append("\n\n").append(parque.generarReporteEstadistico());
+
         areaReporte.setText(sb.toString());
     }
 
@@ -623,5 +611,10 @@ public class PanelAdministradorController {
             a.setContentText("No se pudo volver al login: " + e.getMessage());
             a.showAndWait();
         }
+    }
+    @FXML
+    void onVerEstadisticas(ActionEvent event) {
+        String stats = parque.generarReporteEstadistico();
+        areaReporte.setText(stats);
     }
 }

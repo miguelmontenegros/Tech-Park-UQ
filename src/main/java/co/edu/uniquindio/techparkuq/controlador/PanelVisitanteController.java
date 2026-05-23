@@ -5,26 +5,34 @@ import co.edu.uniquindio.techparkuq.modelo.abstractas.Atraccion;
 import co.edu.uniquindio.techparkuq.modelo.abstractas.Ticket;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.effect.DropShadow;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.collections.FXCollections;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.scene.control.*;
 import javafx.util.Duration;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+import java.time.format.DateTimeFormatter;
 
 public class PanelVisitanteController {
 
@@ -43,6 +51,7 @@ public class PanelVisitanteController {
     @FXML private Label lblSaldo;
     @FXML private TextField txtMontoCarga;
     @FXML private Label lblTicketInfo;
+    @FXML private ImageView imgFotoPerfil;
 
     @FXML private ComboBox<String> cmbTipoTicket;
     @FXML private HBox panelFamiliar;
@@ -64,6 +73,11 @@ public class PanelVisitanteController {
     @FXML private TableColumn<Atraccion, String> colFavTipo;
     @FXML private TableColumn<Atraccion, String> colFavEstado;
 
+    // --- NUEVOS ELEMENTOS DE HISTORIAL ---
+    @FXML private TableView<RegistroVisita> tblHistorial;
+    @FXML private TableColumn<RegistroVisita, String> colHistAtraccion;
+    @FXML private TableColumn<RegistroVisita, String> colHistFecha;
+
     @FXML
     void initialize() {
         configurarTablas();
@@ -71,11 +85,18 @@ public class PanelVisitanteController {
         cargarAtracciones();
     }
 
+    private void refrescarUI() {
+        tblAtracciones.refresh();
+        tblFavoritos.refresh();
+        if (tblHistorial != null) tblHistorial.refresh();
+    }
+
     public void setVisitante(Visitante v) {
         this.visitante = v;
         cargarPerfilVisitante();
         cargarFavoritos();
-        tblAtracciones.refresh();
+        cargarHistorial(); // Carga el historial al setear el visitante
+        refrescarUI();
     }
 
     public void setDocumentoNuevo(String documento) {
@@ -99,6 +120,18 @@ public class PanelVisitanteController {
         colFavNombre.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getNombre()));
         colFavTipo.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getClass().getSimpleName()));
         colFavEstado.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getEstado().toString()));
+
+        // --- CONFIGURACIÓN DE COLUMNAS HISTORIAL ---
+        if (colHistAtraccion != null) {
+            colHistAtraccion.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getNombreAtraccion()));
+            colHistFecha.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getFecha().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))));
+        }
+    }
+
+    private void cargarHistorial() {
+        if (visitante != null && tblHistorial != null) {
+            tblHistorial.setItems(FXCollections.observableArrayList(visitante.getHistorialVisitas()));
+        }
     }
 
     private void cargarPerfilVisitante() {
@@ -109,6 +142,14 @@ public class PanelVisitanteController {
         txtEstatura.setText(String.valueOf(visitante.getEstatura()));
         lblSaldo.setText(String.format("%.2f", visitante.getSaldoVirtual()));
         lblNombreVisitante.setText("Visitante: " + visitante.getNombre());
+
+        String nombreFoto = visitante.getFotografia();
+        if (nombreFoto != null && !nombreFoto.isEmpty()) {
+            File archivo = new File("src/main/resources/data/fotos/" + nombreFoto);
+            if (archivo.exists()) {
+                imgFotoPerfil.setImage(new Image(archivo.toURI().toString()));
+            }
+        }
         actualizarInfoTicket();
     }
 
@@ -153,11 +194,33 @@ public class PanelVisitanteController {
             } else {
                 visitante.setEdad(edad);
                 visitante.setEstatura(estatura);
+                visitante.setNombre(nombre);
                 info("Perfil actualizado", "Los datos fueron guardados correctamente.");
             }
+            ModelFactoryController.getInstance().guardarDatosSerializable();
             cargarPerfilVisitante();
         } catch (NumberFormatException ex) {
             alerta("Error de formato", "Edad (entero) y Estatura (decimal) deben ser números.");
+        }
+    }
+
+    @FXML
+    void onAdjuntarFotoPerfil(ActionEvent event) {
+        if (visitante == null) { alerta("Sin perfil", "Primero guarde su perfil."); return; }
+        FileChooser fc = new FileChooser();
+        fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("Imágenes", "*.png", "*.jpg", "*.jpeg"));
+        File arch = fc.showOpenDialog(txtNombre.getScene().getWindow());
+        if (arch != null) {
+            try {
+                File dir = new File("src/main/resources/data/fotos/");
+                if (!dir.exists()) dir.mkdirs();
+                String nombreDestino = visitante.getDocumento() + ".jpg";
+                File destino = new File(dir, nombreDestino);
+                Files.copy(arch.toPath(), destino.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                visitante.setFotografia(nombreDestino);
+                imgFotoPerfil.setImage(new Image(destino.toURI().toString()));
+                ModelFactoryController.getInstance().guardarDatosSerializable();
+            } catch (IOException e) { alerta("Error", "No se pudo guardar la foto."); }
         }
     }
 
@@ -393,6 +456,7 @@ public class PanelVisitanteController {
                 btnPagar.setOnAction(ev2 -> {
                     visitante.recargarSaldo(monto);
                     lblSaldo.setText(String.format("%.2f", visitante.getSaldoVirtual()));
+                    ModelFactoryController.getInstance().guardarDatosSerializable();
                     txtMontoCarga.clear();
                     dialog.close();
                 });
@@ -495,6 +559,7 @@ public class PanelVisitanteController {
                 return;
             }
             visitante.comprarTicket(ticket);
+            ModelFactoryController.getInstance().guardarDatosSerializable();
             lblSaldo.setText(String.format("%.2f", visitante.getSaldoVirtual()));
             actualizarInfoTicket();
             lblResultadoTicket.setText("Ticket " + tipo + " adquirido correctamente!");
@@ -510,7 +575,7 @@ public class PanelVisitanteController {
     @FXML
     void onRefrescarAtracciones(ActionEvent event) {
         cargarAtracciones();
-        tblAtracciones.refresh();
+        refrescarUI();
     }
 
     @FXML
@@ -522,7 +587,9 @@ public class PanelVisitanteController {
         Atraccion sel = tblAtracciones.getSelectionModel().getSelectedItem();
         if (sel == null) { alerta("Sin seleccion", "Seleccione una atraccion de la tabla."); return; }
         visitante.agregarFavorito(sel);
+        ModelFactoryController.getInstance().guardarDatosSerializable();
         cargarFavoritos();
+        refrescarUI();
         info("Favorito agregado", sel.getNombre() + " fue agregada a tus favoritos.");
     }
 
@@ -532,13 +599,16 @@ public class PanelVisitanteController {
         Atraccion sel = tblFavoritos.getSelectionModel().getSelectedItem();
         if (sel == null) { alerta("Sin seleccion", "Seleccione una atraccion de la lista."); return; }
         visitante.getListaFavoritos().remove(sel);
+        ModelFactoryController.getInstance().guardarDatosSerializable();
         cargarFavoritos();
+        refrescarUI();
     }
 
     @FXML
     void onRefrescarFavoritos(ActionEvent event) {
         cargarFavoritos();
         cargarAtracciones();
+        refrescarUI();
     }
 
     private void alerta(String titulo, String msg) {
