@@ -82,6 +82,7 @@ public class PanelAdministradorController {
                 txtEmpNombre.setText(newSelection.getNombre());
                 txtEmpDocumento.setText(newSelection.getDocumento());
                 txtEmpEdad.setText(String.valueOf(newSelection.getEdad()));
+                txtEmpDocumento.setEditable(false);
             }
         });
 
@@ -101,6 +102,7 @@ public class PanelAdministradorController {
                 txtAtrEdadMin.setText(String.valueOf(newSelection.getEdadMinima()));
                 txtAtrCosto.setText(String.valueOf(newSelection.getCostoAdicional()));
                 cmbAtrZona.setValue(encontrarZonaDe(newSelection));
+                txtAtrId.setEditable(false);
                 if (newSelection instanceof AtraccionAcuatica) {
                     cmbAtrTipo.setValue(TipoAtraccion.ACUATICA);
                 } else if (newSelection instanceof AtraccionMecanicaAltura) {
@@ -238,6 +240,14 @@ public class PanelAdministradorController {
             alerta("Campos incompletos", "Complete todos los campos del formulario.");
             return;
         }
+
+        for (Empleado e : parque.getListaEmpleados()) {
+            if (e.getDocumento().equals(doc)) {
+                alerta("Documento duplicado", "Ya existe un empleado registrado con el documento: " + doc);
+                return;
+            }
+        }
+
         try {
             int edad = Integer.parseInt(edadStr);
             parque.contratarEmpleado(new Operador(nombre, doc, edad));
@@ -258,11 +268,10 @@ public class PanelAdministradorController {
             return;
         }
         String nombre = txtEmpNombre.getText().trim();
-        String doc = txtEmpDocumento.getText().trim();
         String edadStr = txtEmpEdad.getText().trim();
 
-        if (nombre.isEmpty() || doc.isEmpty() || edadStr.isEmpty()) {
-            alerta("Campos incompletos", "Complete todos los campos para actualizar.");
+        if (nombre.isEmpty() || edadStr.isEmpty()) {
+            alerta("Campos incompletos", "Complete los campos de nombre y edad para actualizar.");
             return;
         }
         try {
@@ -357,7 +366,7 @@ public class PanelAdministradorController {
         cargarZonas();
         cargarAtracciones();
         limpiarFormZona();
-        info("Éxito", "Zona deleted del sistema.");
+        info("Éxito", "Zona eliminada del sistema.");
     }
 
     @FXML
@@ -372,6 +381,14 @@ public class PanelAdministradorController {
             alerta("Campos incompletos", "Complete: ID, Nombre, Tipo, Zona y Capacidad.");
             return;
         }
+
+        for (Atraccion a : parque.getListaAtracciones()) {
+            if (a.getIdUnico().equals(id)) {
+                alerta("ID duplicado", "Ya existe una atracción registrada con el ID único: " + id);
+                return;
+            }
+        }
+
         try {
             int cap = Integer.parseInt(capStr);
             double altMin = txtAtrAlturaMin.getText().trim().isEmpty() ? 0.0 : Double.parseDouble(txtAtrAlturaMin.getText().trim());
@@ -396,14 +413,12 @@ public class PanelAdministradorController {
             alerta("Sin selección", "Seleccione una atracción de la tabla para actualizar.");
             return;
         }
-        String id = txtAtrId.getText().trim();
         String nombre = txtAtrNombre.getText().trim();
-        TipoAtraccion tipo = cmbAtrTipo.getValue();
         String zonaNombre = cmbAtrZona.getValue();
         String capStr = txtAtrCapacidad.getText().trim();
 
-        if (id.isEmpty() || nombre.isEmpty() || tipo == null || zonaNombre == null || capStr.isEmpty()) {
-            alerta("Campos incompletos", "Complete todos los campos para actualizar la atracción.");
+        if (nombre.isEmpty() || zonaNombre == null || capStr.isEmpty()) {
+            alerta("Campos incompletos", "Complete Nombre, Zona y Capacidad para actualizar.");
             return;
         }
         try {
@@ -426,7 +441,6 @@ public class PanelAdministradorController {
                 }
             }
 
-            sel.setIdUnico(id);
             sel.setNombre(nombre);
             sel.setCapacidadMaximaCiclo(cap);
             sel.setAlturaMinima(altMin);
@@ -564,12 +578,20 @@ public class PanelAdministradorController {
         return "Sin zona";
     }
 
-    private void limpiarFormEmp() { txtEmpNombre.clear(); txtEmpDocumento.clear(); txtEmpEdad.clear(); }
+    private void limpiarFormEmp() {
+        txtEmpNombre.clear();
+        txtEmpDocumento.clear();
+        txtEmpEdad.clear();
+        txtEmpDocumento.setEditable(true);
+    }
+
     private void limpiarFormZona() { txtZonaNombre.clear(); txtZonaCapacidad.clear(); }
+
     private void limpiarFormAtr() {
         txtAtrId.clear(); txtAtrNombre.clear(); txtAtrCapacidad.clear();
         txtAtrAlturaMin.clear(); txtAtrEdadMin.clear(); txtAtrCosto.clear();
         cmbAtrTipo.setValue(null); cmbAtrZona.setValue(null);
+        txtAtrId.setEditable(true);
     }
 
     private void alerta(String titulo, String msg) {
