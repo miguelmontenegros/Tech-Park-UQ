@@ -17,6 +17,13 @@ public abstract class Persona {
         return documento;
     }
 
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public void setDocumento(String documento) {
+        this.documento = documento;
+    }
 
     @Override
     public String toString() {

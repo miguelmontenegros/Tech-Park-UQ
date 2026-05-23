@@ -76,6 +76,42 @@ public class PanelAdministradorController {
         configurarTablaAsignaciones();
         configurarCombos();
         cargarTodos();
+
+        tblEmpleados.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            if (newSelection != null) {
+                txtEmpNombre.setText(newSelection.getNombre());
+                txtEmpDocumento.setText(newSelection.getDocumento());
+                txtEmpEdad.setText(String.valueOf(newSelection.getEdad()));
+            }
+        });
+
+        tblZonas.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            if (newSelection != null) {
+                txtZonaNombre.setText(newSelection.getNombre());
+                txtZonaCapacidad.setText(String.valueOf(newSelection.getCapacidadMaxima()));
+            }
+        });
+
+        tblAtracciones.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            if (newSelection != null) {
+                txtAtrId.setText(newSelection.getIdUnico());
+                txtAtrNombre.setText(newSelection.getNombre());
+                txtAtrCapacidad.setText(String.valueOf(newSelection.getCapacidadMaximaCiclo()));
+                txtAtrAlturaMin.setText(String.valueOf(newSelection.getAlturaMinima()));
+                txtAtrEdadMin.setText(String.valueOf(newSelection.getEdadMinima()));
+                txtAtrCosto.setText(String.valueOf(newSelection.getCostoAdicional()));
+                cmbAtrZona.setValue(encontrarZonaDe(newSelection));
+                if (newSelection instanceof AtraccionAcuatica) {
+                    cmbAtrTipo.setValue(TipoAtraccion.ACUATICA);
+                } else if (newSelection instanceof AtraccionMecanicaAltura) {
+                    cmbAtrTipo.setValue(TipoAtraccion.MECANICA_ALTURA);
+                } else if (newSelection instanceof AtraccionShow) {
+                    cmbAtrTipo.setValue(TipoAtraccion.SHOW);
+                } else if (newSelection instanceof AtraccionGeneral) {
+                    cmbAtrTipo.setValue(TipoAtraccion.FAMILIAR);
+                }
+            }
+        });
     }
 
     private void configurarTablaEmpleados() {
@@ -215,13 +251,46 @@ public class PanelAdministradorController {
     }
 
     @FXML
+    void onActualizarEmpleado(ActionEvent event) {
+        Empleado sel = tblEmpleados.getSelectionModel().getSelectedItem();
+        if (sel == null) {
+            alerta("Sin selección", "Seleccione un empleado de la tabla para actualizar.");
+            return;
+        }
+        String nombre = txtEmpNombre.getText().trim();
+        String doc = txtEmpDocumento.getText().trim();
+        String edadStr = txtEmpEdad.getText().trim();
+
+        if (nombre.isEmpty() || doc.isEmpty() || edadStr.isEmpty()) {
+            alerta("Campos incompletos", "Complete todos los campos para actualizar.");
+            return;
+        }
+        try {
+            int edad = Integer.parseInt(edadStr);
+            sel.setNombre(nombre);
+            sel.setEdad(edad);
+            cargarEmpleados();
+            cargarAsignaciones();
+            actualizarCombosOperador();
+            limpiarFormEmp();
+            info("Éxito", "Datos del empleado actualizados.");
+        } catch (NumberFormatException ex) {
+            alerta("Error", "La edad debe ser un número entero.");
+        }
+    }
+
+    @FXML
     void onDesvincularEmpleado(ActionEvent event) {
         Empleado sel = tblEmpleados.getSelectionModel().getSelectedItem();
         if (sel == null) { alerta("Sin selección", "Seleccione un empleado de la tabla."); return; }
+        if (sel instanceof Operador op && op.getZonaAsignada() != null) {
+            op.getZonaAsignada().getListOperadores().remove(op);
+        }
         parque.getListaEmpleados().remove(sel);
         cargarEmpleados();
         cargarAsignaciones();
         actualizarCombosOperador();
+        limpiarFormEmp();
         info("Éxito", "Empleado desvinculado del sistema.");
     }
 
@@ -245,12 +314,44 @@ public class PanelAdministradorController {
     }
 
     @FXML
+    void onActualizarZona(ActionEvent event) {
+        Zona sel = tblZonas.getSelectionModel().getSelectedItem();
+        if (sel == null) {
+            alerta("Sin selección", "Seleccione una zona de la tabla para actualizar.");
+            return;
+        }
+        String nombre = txtZonaNombre.getText().trim();
+        String capStr = txtZonaCapacidad.getText().trim();
+
+        if (nombre.isEmpty() || capStr.isEmpty()) {
+            alerta("Campos incompletos", "Complete los campos para actualizar la zona.");
+            return;
+        }
+        try {
+            int cap = Integer.parseInt(capStr);
+            sel.setNombre(nombre);
+            sel.setCapacidadMaxima(cap);
+            cargarZonas();
+            cargarAtracciones();
+            limpiarFormZona();
+            info("Éxito", "Zona actualizada correctamente.");
+        } catch (NumberFormatException ex) {
+            alerta("Error", "La capacidad debe ser un número entero.");
+        }
+    }
+
+    @FXML
     void onEliminarZona(ActionEvent event) {
         Zona sel = tblZonas.getSelectionModel().getSelectedItem();
         if (sel == null) { alerta("Sin selección", "Seleccione una zona de la tabla."); return; }
+        if (!sel.getListaAtracciones().isEmpty()) {
+            alerta("Zona ocupada", "No se puede eliminar una zona con atracciones asociadas.");
+            return;
+        }
         parque.getListaZonas().remove(sel);
         cargarZonas();
         cargarAtracciones();
+        limpiarFormZona();
         info("Éxito", "Zona eliminada del sistema.");
     }
 
@@ -283,6 +384,59 @@ public class PanelAdministradorController {
         }
     }
 
+    @FXML
+    void onActualizarAtraccion(ActionEvent event) {
+        Atraccion sel = tblAtracciones.getSelectionModel().getSelectedItem();
+        if (sel == null) {
+            alerta("Sin selección", "Seleccione una atracción de la tabla para actualizar.");
+            return;
+        }
+        String id = txtAtrId.getText().trim();
+        String nombre = txtAtrNombre.getText().trim();
+        TipoAtraccion tipo = cmbAtrTipo.getValue();
+        String zonaNombre = cmbAtrZona.getValue();
+        String capStr = txtAtrCapacidad.getText().trim();
+
+        if (id.isEmpty() || nombre.isEmpty() || tipo == null || zonaNombre == null || capStr.isEmpty()) {
+            alerta("Campos incompletos", "Complete todos los campos para actualizar la atracción.");
+            return;
+        }
+        try {
+            int cap = Integer.parseInt(capStr);
+            double altMin = Double.parseDouble(txtAtrAlturaMin.getText().trim());
+            int edMin = Integer.parseInt(txtAtrEdadMin.getText().trim());
+            double costo = Double.parseDouble(txtAtrCosto.getText().trim());
+
+            String zonaActualNombre = encontrarZonaDe(sel);
+            if (!zonaActualNombre.equals(zonaNombre)) {
+                for (Zona z : parque.getListaZonas()) {
+                    if (z.getNombre().equals(zonaActualNombre)) {
+                        z.getListaAtracciones().remove(sel);
+                    }
+                }
+                for (Zona z : parque.getListaZonas()) {
+                    if (z.getNombre().equals(zonaNombre)) {
+                        z.getListaAtracciones().add(sel);
+                    }
+                }
+            }
+
+            sel.setIdUnico(id);
+            sel.setNombre(nombre);
+            sel.setCapacidadMaximaCiclo(cap);
+            sel.setAlturaMinima(altMin);
+            sel.setEdadMinima(edMin);
+            sel.setCostoAdicional(costo);
+
+            cargarAtracciones();
+            cargarZonas();
+            limpiarFormAtr();
+            info("Éxito", "Atracción actualizada en el sistema.");
+        } catch (NumberFormatException ex) {
+            alerta("Error de formato", "Revise los campos numéricos.");
+        }
+    }
+
     private Atraccion crearPorTipo(TipoAtraccion tipo, String id, String nombre, int cap, double altMin, int edMin, double costo) {
         return switch (tipo) {
             case ACUATICA -> new AtraccionAcuatica(id, nombre, cap, altMin, edMin, costo, false);
@@ -298,6 +452,7 @@ public class PanelAdministradorController {
         if (sel == null) { alerta("Sin selección", "Seleccione una atracción."); return; }
         parque.eliminarAtraccion(sel.getIdUnico());
         cargarAtracciones();
+        limpiarFormAtr();
         info("Atracción deshabilitada", "Estado cambiado a CERRADA.");
     }
 
