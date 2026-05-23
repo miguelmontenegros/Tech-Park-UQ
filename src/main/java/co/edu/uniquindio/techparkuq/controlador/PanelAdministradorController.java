@@ -478,6 +478,30 @@ public class PanelAdministradorController {
     }
 
     @FXML
+    void onDesdesasignarOperador(ActionEvent event) {
+        Operador op = tblAsignaciones.getSelectionModel().getSelectedItem();
+        if (op == null) {
+            op = cmbAsigOperador.getValue();
+        }
+        if (op == null) {
+            alerta("Sin selección", "Seleccione un operador de la tabla de asignaciones o del combo.");
+            return;
+        }
+        Zona zona = op.getZonaAsignada();
+        if (zona == null) {
+            alerta("Sin asignación", "El operador seleccionado no tiene ninguna zona asignada.");
+            return;
+        }
+        zona.getListOperadores().remove(op);
+        op.setZonaAsignada(null);
+        op.getListAtraccionesGestionadas().clear();
+
+        cargarEmpleados();
+        cargarAsignaciones();
+        info("Desasignación exitosa", op.getNombre() + " ha sido desvinculado de la zona " + zona.getNombre() + ".");
+    }
+
+    @FXML
     void onActivarClima(ActionEvent event) {
         AlertaClimatica alerta = cmbClima.getValue();
         if (alerta == null) { alerta("Sin selección", "Seleccione un tipo de alerta."); return; }
