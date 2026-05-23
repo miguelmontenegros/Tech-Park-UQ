@@ -269,9 +269,10 @@ public class PanelAdministradorController {
             int edad = Integer.parseInt(edadStr);
             sel.setNombre(nombre);
             sel.setEdad(edad);
-            cargarEmpleados();
-            cargarAsignaciones();
-            actualizarCombosOperador();
+
+            tblEmpleados.refresh();
+            tblAsignaciones.refresh();
+
             limpiarFormEmp();
             info("Éxito", "Datos del empleado actualizados.");
         } catch (NumberFormatException ex) {
@@ -290,6 +291,7 @@ public class PanelAdministradorController {
         cargarEmpleados();
         cargarAsignaciones();
         actualizarCombosOperador();
+        tblZonas.refresh();
         limpiarFormEmp();
         info("Éxito", "Empleado desvinculado del sistema.");
     }
@@ -331,8 +333,11 @@ public class PanelAdministradorController {
             int cap = Integer.parseInt(capStr);
             sel.setNombre(nombre);
             sel.setCapacidadMaxima(cap);
-            cargarZonas();
-            cargarAtracciones();
+
+            tblZonas.refresh();
+            tblAtracciones.refresh();
+            actualizarCombosZona();
+
             limpiarFormZona();
             info("Éxito", "Zona actualizada correctamente.");
         } catch (NumberFormatException ex) {
@@ -352,7 +357,7 @@ public class PanelAdministradorController {
         cargarZonas();
         cargarAtracciones();
         limpiarFormZona();
-        info("Éxito", "Zona eliminada del sistema.");
+        info("Éxito", "Zona deleted del sistema.");
     }
 
     @FXML
@@ -428,8 +433,9 @@ public class PanelAdministradorController {
             sel.setEdadMinima(edMin);
             sel.setCostoAdicional(costo);
 
-            cargarAtracciones();
-            cargarZonas();
+            tblAtracciones.refresh();
+            tblZonas.refresh();
+
             limpiarFormAtr();
             info("Éxito", "Atracción actualizada en el sistema.");
         } catch (NumberFormatException ex) {
@@ -451,7 +457,9 @@ public class PanelAdministradorController {
         Atraccion sel = tblAtracciones.getSelectionModel().getSelectedItem();
         if (sel == null) { alerta("Sin selección", "Seleccione una atracción."); return; }
         parque.eliminarAtraccion(sel.getIdUnico());
-        cargarAtracciones();
+
+        tblAtracciones.refresh();
+
         limpiarFormAtr();
         info("Atracción deshabilitada", "Estado cambiado a CERRADA.");
     }
@@ -498,6 +506,7 @@ public class PanelAdministradorController {
 
         cargarEmpleados();
         cargarAsignaciones();
+        tblZonas.refresh();
         info("Desasignación exitosa", op.getNombre() + " ha sido desvinculado de la zona " + zona.getNombre() + ".");
     }
 
