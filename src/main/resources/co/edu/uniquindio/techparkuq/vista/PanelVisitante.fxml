@@ -108,7 +108,6 @@
                         <ComboBox fx:id="cmbTipoTicket" onAction="#onSeleccionarTicket" prefWidth="200" />
                     </HBox>
 
-                    <!-- Panel de integrantes — visible solo si tipo = Familiar -->
                     <HBox fx:id="panelFamiliar" alignment="CENTER_LEFT" managed="false" spacing="10" visible="false">
                         <Label prefWidth="130" text="N° integrantes:" />
                         <TextField fx:id="txtNumIntegrantes" prefWidth="80" promptText="Ej: 4" />
@@ -116,7 +115,7 @@
 
                     <HBox alignment="CENTER_LEFT" spacing="10">
                         <Label prefWidth="130" text="Precio base ($):" />
-                        <TextField fx:id="txtPrecioBase" prefWidth="130" promptText="Ej: 25000" />
+                        <Label fx:id="lblPrecioBase" style="-fx-font-size: 13; -fx-font-weight: bold; -fx-text-fill: #333;" text="Seleccione un tipo" />
                     </HBox>
 
                     <HBox alignment="CENTER_LEFT" spacing="10">
