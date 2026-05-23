@@ -11,7 +11,7 @@ public class Zona {
     private String nombre;
     private int capacidadMaxima;
     private int aforoActual;
-    private List<Atraccion> listaAtracciones;
+    private List<Atraccion> listaAtracciones = new ArrayList<>();
     private List<Operador> listOperadores;
 
 

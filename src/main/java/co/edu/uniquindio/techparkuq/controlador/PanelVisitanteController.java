@@ -3,6 +3,8 @@ package co.edu.uniquindio.techparkuq.controlador;
 import co.edu.uniquindio.techparkuq.modelo.*;
 import co.edu.uniquindio.techparkuq.modelo.abstractas.Atraccion;
 import co.edu.uniquindio.techparkuq.modelo.abstractas.Ticket;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -12,8 +14,6 @@ import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 
 public class PanelVisitanteController {
@@ -21,35 +21,34 @@ public class PanelVisitanteController {
     private final Parque parque = ModelFactoryController.getInstance().getParque();
     private Visitante visitante;
 
-    @FXML private Label     lblNombreVisitante;
+    @FXML private Label lblNombreVisitante;
     @FXML private TextField txtNombre;
     @FXML private TextField txtDocumento;
     @FXML private TextField txtEdad;
     @FXML private TextField txtEstatura;
-    @FXML private Label     lblSaldo;
+    @FXML private Label lblSaldo;
     @FXML private TextField txtMontoCarga;
-    @FXML private Label     lblTicketInfo;
+    @FXML private Label lblTicketInfo;
 
     @FXML private ComboBox<String> cmbTipoTicket;
-    @FXML private HBox             panelFamiliar;
-    @FXML private TextField        txtNumIntegrantes;
-    @FXML private TextField        txtPrecioBase;
-    @FXML private Label            lblCostoFinal;
-    @FXML private Label            lblResultadoTicket;
+    @FXML private HBox panelFamiliar;
+    @FXML private TextField txtNumIntegrantes;
+    @FXML private TextField txtPrecioBase;
+    @FXML private Label lblCostoFinal;
+    @FXML private Label lblResultadoTicket;
 
-    @FXML private TableView<Atraccion>           tblAtracciones;
-    @FXML private TableColumn<Atraccion, String>  colVisNombre;
-    @FXML private TableColumn<Atraccion, String>  colVisTipo;
-    @FXML private TableColumn<Atraccion, String>  colVisEstado;
+    @FXML private TableView<Atraccion> tblAtracciones;
+    @FXML private TableColumn<Atraccion, String> colVisNombre;
+    @FXML private TableColumn<Atraccion, String> colVisTipo;
+    @FXML private TableColumn<Atraccion, String> colVisEstado;
     @FXML private TableColumn<Atraccion, Integer> colVisEspera;
-    @FXML private TableColumn<Atraccion, Double>  colVisCosto;
-    @FXML private TableColumn<Atraccion, Double>  colVisAlt;
+    @FXML private TableColumn<Atraccion, Double> colVisCosto;
+    @FXML private TableColumn<Atraccion, Double> colVisAlt;
 
-    @FXML private TableView<Atraccion>           tblFavoritos;
-    @FXML private TableColumn<Atraccion, String>  colFavNombre;
-    @FXML private TableColumn<Atraccion, String>  colFavTipo;
-    @FXML private TableColumn<Atraccion, String>  colFavEstado;
-
+    @FXML private TableView<Atraccion> tblFavoritos;
+    @FXML private TableColumn<Atraccion, String> colFavNombre;
+    @FXML private TableColumn<Atraccion, String> colFavTipo;
+    @FXML private TableColumn<Atraccion, String> colFavEstado;
 
     @FXML
     void initialize() {
@@ -70,29 +69,22 @@ public class PanelVisitanteController {
         lblNombreVisitante.setText("Nuevo Visitante — Complete su perfil");
     }
 
-
     private void configurarTablas() {
-        colVisNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
-        colVisTipo.setCellValueFactory(c ->
-                new SimpleStringProperty(c.getValue().getClass().getSimpleName()));
-        colVisEstado.setCellValueFactory(c ->
-                new SimpleStringProperty(c.getValue().getEstado().toString()));
+        colVisNombre.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getNombre()));
+        colVisTipo.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getClass().getSimpleName()));
+        colVisEstado.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getEstado().toString()));
         colVisEspera.setCellValueFactory(c -> {
             if (visitante != null) {
-                int t = c.getValue().getTiempoEsperaParaVisitante(visitante);
-                return new javafx.beans.property.SimpleIntegerProperty(t).asObject();
+                return new SimpleIntegerProperty(c.getValue().getTiempoEsperaParaVisitante(visitante)).asObject();
             }
-            return new javafx.beans.property.SimpleIntegerProperty(
-                    c.getValue().getTiempoEsperaEstimado()).asObject();
+            return new SimpleIntegerProperty(c.getValue().getTiempoEsperaEstimado()).asObject();
         });
-        colVisCosto.setCellValueFactory(new PropertyValueFactory<>("costoAdicional"));
-        colVisAlt.setCellValueFactory(new PropertyValueFactory<>("alturaMinima"));
+        colVisCosto.setCellValueFactory(c -> new SimpleDoubleProperty(c.getValue().getCostoAdicional()).asObject());
+        colVisAlt.setCellValueFactory(c -> new SimpleDoubleProperty(c.getValue().getAlturaMinima()).asObject());
 
-        colFavNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
-        colFavTipo.setCellValueFactory(c ->
-                new SimpleStringProperty(c.getValue().getClass().getSimpleName()));
-        colFavEstado.setCellValueFactory(c ->
-                new SimpleStringProperty(c.getValue().getEstado().toString()));
+        colFavNombre.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getNombre()));
+        colFavTipo.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getClass().getSimpleName()));
+        colFavEstado.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getEstado().toString()));
     }
 
     private void cargarPerfilVisitante() {
@@ -110,9 +102,7 @@ public class PanelVisitanteController {
         if (visitante == null) return;
         Ticket t = visitante.getTicket();
         if (t != null) {
-            lblTicketInfo.setText(t.getClass().getSimpleName()
-                    + " | ID: " + t.getIdTicket()
-                    + " | Costo total: $" + String.format("%.2f", t.calcularCostoFinal()));
+            lblTicketInfo.setText(t.getClass().getSimpleName() + " | ID: " + t.getIdTicket() + " | Costo total: $" + String.format("%.2f", t.calcularCostoFinal()));
         } else {
             lblTicketInfo.setText("Sin ticket activo.");
         }
@@ -127,20 +117,19 @@ public class PanelVisitanteController {
         tblFavoritos.setItems(FXCollections.observableArrayList(visitante.getListaFavoritos()));
     }
 
-
     @FXML
     void onGuardarPerfil(ActionEvent event) {
-        String nombre    = txtNombre.getText().trim();
-        String doc       = txtDocumento.getText().trim();
-        String edadStr   = txtEdad.getText().trim();
-        String estatStr  = txtEstatura.getText().trim();
+        String nombre = txtNombre.getText().trim();
+        String doc = txtDocumento.getText().trim();
+        String edadStr = txtEdad.getText().trim();
+        String estatStr = txtEstatura.getText().trim();
 
         if (nombre.isEmpty() || doc.isEmpty() || edadStr.isEmpty() || estatStr.isEmpty()) {
             alerta("Campos incompletos", "Complete todos los datos del perfil.");
             return;
         }
         try {
-            int    edad     = Integer.parseInt(edadStr);
+            int edad = Integer.parseInt(edadStr);
             double estatura = Double.parseDouble(estatStr);
 
             if (visitante == null) {
@@ -153,7 +142,6 @@ public class PanelVisitanteController {
                 info("Perfil actualizado", "Los datos fueron guardados correctamente.");
             }
             cargarPerfilVisitante();
-
         } catch (NumberFormatException ex) {
             alerta("Error de formato", "Edad (entero) y Estatura (decimal) deben ser números.");
         }
@@ -179,7 +167,6 @@ public class PanelVisitanteController {
         }
     }
 
-
     @FXML
     void onSeleccionarTicket(ActionEvent event) {
         boolean familiar = "Familiar".equals(cmbTipoTicket.getValue());
@@ -194,7 +181,7 @@ public class PanelVisitanteController {
             alerta("Sin perfil", "Primero registre su perfil en la pestaña 'Mi Perfil'.");
             return;
         }
-        String tipo     = cmbTipoTicket.getValue();
+        String tipo = cmbTipoTicket.getValue();
         String precioStr = txtPrecioBase.getText().trim();
         if (tipo == null || precioStr.isEmpty()) {
             alerta("Datos incompletos", "Seleccione tipo de ticket e ingrese el precio base.");
@@ -202,7 +189,7 @@ public class PanelVisitanteController {
         }
         try {
             double precioBase = Double.parseDouble(precioStr);
-            String idTicket   = "TKT-" + System.currentTimeMillis();
+            String idTicket = "TKT-" + System.currentTimeMillis();
             Ticket ticket;
 
             switch (tipo) {
@@ -212,31 +199,26 @@ public class PanelVisitanteController {
                     ticket = new TicketFamiliar(idTicket, precioBase, num);
                 }
                 case "Fast-Pass" -> ticket = new TicketFastPass(idTicket, precioBase);
-                default          -> ticket = new TicketGeneral(idTicket, precioBase);
+                default -> ticket = new TicketGeneral(idTicket, precioBase);
             }
 
             double costoFinal = ticket.calcularCostoFinal();
             lblCostoFinal.setText("$" + String.format("%.2f", costoFinal));
 
             if (!visitante.descontarSaldo(costoFinal)) {
-                alerta("Saldo insuficiente",
-                        "Saldo actual: $" + String.format("%.2f", visitante.getSaldoVirtual())
-                                + "\nCosto requerido: $" + String.format("%.2f", costoFinal));
+                alerta("Saldo insuficiente", "Saldo actual: $" + String.format("%.2f", visitante.getSaldoVirtual()) + "\nCosto requerido: $" + String.format("%.2f", costoFinal));
                 return;
             }
             visitante.comprarTicket(ticket);
             lblSaldo.setText(String.format("%.2f", visitante.getSaldoVirtual()));
             actualizarInfoTicket();
             lblResultadoTicket.setText("¡Ticket " + tipo + " adquirido correctamente!");
-            info("Compra exitosa",
-                    "Ticket adquirido.\nTipo: " + tipo
-                            + "\nCosto: $" + String.format("%.2f", costoFinal));
+            info("Compra exitosa", "Ticket adquirido.\nTipo: " + tipo + "\nCosto: $" + String.format("%.2f", costoFinal));
 
         } catch (NumberFormatException ex) {
             alerta("Error de formato", "Verifique los campos numéricos.");
         }
     }
-
 
     @FXML
     void onRefrescarAtracciones(ActionEvent event) {
@@ -257,7 +239,6 @@ public class PanelVisitanteController {
         info("Favorito agregado", sel.getNombre() + " fue agregada a tus favoritos.");
     }
 
-
     @FXML
     void onEliminarFavorito(ActionEvent event) {
         if (visitante == null) return;
@@ -273,7 +254,6 @@ public class PanelVisitanteController {
         cargarAtracciones();
     }
 
-
     private void alerta(String titulo, String msg) {
         Alert a = new Alert(Alert.AlertType.WARNING);
         a.setTitle(titulo); a.setHeaderText(null); a.setContentText(msg); a.showAndWait();
@@ -287,8 +267,7 @@ public class PanelVisitanteController {
     @FXML
     void onVolverLogin(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(
-                    "/co/edu/uniquindio/techparkuq/vista/Login.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/co/edu/uniquindio/techparkuq/vista/Login.fxml"));
             Parent root = loader.load();
             Stage stage = new Stage();
             stage.setScene(new Scene(root));
@@ -321,5 +300,4 @@ public class PanelVisitanteController {
         a.getDialogPane().setContent(ta);
         a.showAndWait();
     }
-
 }
