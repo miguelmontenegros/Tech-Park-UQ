@@ -63,6 +63,7 @@ public class PanelOperadorController {
     private void refrescarUI() {
         tblMisAtracciones.refresh();
         cargarAtracciones();
+        configurarCombos();
         refrescarVistaCola();
     }
 
@@ -110,6 +111,14 @@ public class PanelOperadorController {
 
         if (operador == null) return;
         var atrs = FXCollections.observableArrayList(operador.getListAtraccionesGestionadas());
+
+        Atraccion ctrlSel = cmbCtrlAtraccion.getValue();
+        Atraccion mantSel = cmbMantAtraccion.getValue();
+        Atraccion valSel = cmbValidarAtraccion.getValue();
+        Atraccion colaSel = cmbColaAtraccion.getValue();
+        Visitante visSel = cmbVisitante.getValue();
+        Visitante colaVisSel = cmbColaVisitante.getValue();
+
         cmbCtrlAtraccion.setItems(atrs);
         cmbMantAtraccion.setItems(atrs);
         cmbValidarAtraccion.setItems(atrs);
@@ -118,6 +127,13 @@ public class PanelOperadorController {
         var visitantes = FXCollections.observableArrayList(parque.getListaVisitantes());
         cmbVisitante.setItems(visitantes);
         cmbColaVisitante.setItems(visitantes);
+
+        if (atrs.contains(ctrlSel)) cmbCtrlAtraccion.setValue(ctrlSel);
+        if (atrs.contains(mantSel)) cmbMantAtraccion.setValue(mantSel);
+        if (atrs.contains(valSel)) cmbValidarAtraccion.setValue(valSel);
+        if (atrs.contains(colaSel)) cmbColaAtraccion.setValue(colaSel);
+        if (visitantes.contains(visSel)) cmbVisitante.setValue(visSel);
+        if (visitantes.contains(colaVisSel)) cmbColaVisitante.setValue(colaVisSel);
     }
 
     private void cargarAtracciones() {
@@ -127,7 +143,7 @@ public class PanelOperadorController {
 
     @FXML
     void onRefrescarAtracciones(ActionEvent event) {
-        cargarAtracciones();
+        refrescarUI();
     }
 
     @FXML
@@ -236,7 +252,7 @@ public class PanelOperadorController {
         }
         cola.agregarVisitante(v);
         ModelFactoryController.getInstance().guardarDatosSerializable();
-        refrescarVistaCola();
+        refrescarUI();
         lblColaResultado.setText("✓ " + v.getNombre() + " agregado a la cola de " + a.getNombre());
         lblColaResultado.setStyle("-fx-text-fill: #2E7D32; -fx-font-weight: bold;");
     }
@@ -256,8 +272,8 @@ public class PanelOperadorController {
         } else {
             lblColaResultado.setText("La cola está vacía.");
             lblColaResultado.setStyle("-fx-text-fill: #666;");
+            refrescarVistaCola();
         }
-        refrescarVistaCola();
     }
 
     @FXML
