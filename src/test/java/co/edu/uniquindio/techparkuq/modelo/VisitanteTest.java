@@ -54,7 +54,7 @@ public class VisitanteTest {
     public void testRegistrarVisita() {
         visitante.registrarVisita("Montaña Rusa");
         assertEquals(1, visitante.getHistorialVisitas().size());
-        assertTrue(visitante.getHistorialVisitas().get(0).contains("Montaña Rusa"));
+        assertEquals("Montaña Rusa", visitante.getHistorialVisitas().get(0).getNombreAtraccion());
     }
 
     @Test

@@ -2,6 +2,7 @@ package co.edu.uniquindio.techparkuq.modelo;
 
 import co.edu.uniquindio.techparkuq.modelo.abstractas.Atraccion;
 import co.edu.uniquindio.techparkuq.modelo.abstractas.Empleado;
+import co.edu.uniquindio.techparkuq.modelo.abstractas.Persona;
 import co.edu.uniquindio.techparkuq.modelo.enums.AlertaClimatica;
 import co.edu.uniquindio.techparkuq.modelo.enums.EstadoAtraccion;
 import co.edu.uniquindio.techparkuq.modelo.interfaces.IGestionable;
@@ -29,6 +30,23 @@ public class Parque implements IGestionable, Serializable {
         this.listaEmpleados = new ArrayList<>();
         this.visitantesActivos = new ArrayList<>();
         this.estadoClima = AlertaClimatica.NINGUNA;
+
+        Administrador adminMaestro = new Administrador("Admin Principal", "12345", 30, "ALTO", this);
+        this.listaEmpleados.add(adminMaestro);
+    }
+
+    public Persona buscarPersonaPorDocumento(String documento) {
+        for (Empleado e : listaEmpleados) {
+            if (e.getDocumento().equals(documento)) {
+                return e;
+            }
+        }
+        for (Visitante v : visitantesActivos) {
+            if (v.getDocumento().equals(documento)) {
+                return v;
+            }
+        }
+        return null;
     }
 
     public void contratarEmpleado(Empleado empleado) {
@@ -126,7 +144,6 @@ public class Parque implements IGestionable, Serializable {
         }
     }
 
-    // --- ESTADÍSTICAS AVANZADAS MEJORADAS ---
     public String generarReporteEstadistico() {
         List<Atraccion> todas = getListaAtracciones();
 

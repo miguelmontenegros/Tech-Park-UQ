@@ -73,7 +73,6 @@ public class PanelVisitanteController {
     @FXML private TableColumn<Atraccion, String> colFavTipo;
     @FXML private TableColumn<Atraccion, String> colFavEstado;
 
-    // --- NUEVOS ELEMENTOS DE HISTORIAL ---
     @FXML private TableView<RegistroVisita> tblHistorial;
     @FXML private TableColumn<RegistroVisita, String> colHistAtraccion;
     @FXML private TableColumn<RegistroVisita, String> colHistFecha;
@@ -95,7 +94,7 @@ public class PanelVisitanteController {
         this.visitante = v;
         cargarPerfilVisitante();
         cargarFavoritos();
-        cargarHistorial(); // Carga el historial al setear el visitante
+        cargarHistorial();
         refrescarUI();
     }
 
@@ -121,7 +120,6 @@ public class PanelVisitanteController {
         colFavTipo.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getClass().getSimpleName()));
         colFavEstado.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getEstado().toString()));
 
-        // --- CONFIGURACIÓN DE COLUMNAS HISTORIAL ---
         if (colHistAtraccion != null) {
             colHistAtraccion.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getNombreAtraccion()));
             colHistFecha.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getFecha().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))));
