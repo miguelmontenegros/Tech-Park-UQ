@@ -87,7 +87,9 @@ public class PanelVisitanteController {
     private void refrescarUI() {
         tblAtracciones.refresh();
         tblFavoritos.refresh();
-        if (tblHistorial != null) tblHistorial.refresh();
+        if (tblHistorial != null) {
+            tblHistorial.refresh();
+        }
     }
 
     public void setVisitante(Visitante v) {
@@ -197,6 +199,8 @@ public class PanelVisitanteController {
             }
             ModelFactoryController.getInstance().guardarDatosSerializable();
             cargarPerfilVisitante();
+            cargarAtracciones();
+            refrescarUI();
         } catch (NumberFormatException ex) {
             alerta("Error de formato", "Edad (entero) y Estatura (decimal) deben ser números.");
         }
@@ -456,6 +460,8 @@ public class PanelVisitanteController {
                     lblSaldo.setText(String.format("%.2f", visitante.getSaldoVirtual()));
                     ModelFactoryController.getInstance().guardarDatosSerializable();
                     txtMontoCarga.clear();
+                    cargarAtracciones();
+                    refrescarUI();
                     dialog.close();
                 });
             }));
@@ -560,6 +566,8 @@ public class PanelVisitanteController {
             ModelFactoryController.getInstance().guardarDatosSerializable();
             lblSaldo.setText(String.format("%.2f", visitante.getSaldoVirtual()));
             actualizarInfoTicket();
+            cargarAtracciones();
+            refrescarUI();
             lblResultadoTicket.setText("Ticket " + tipo + " adquirido correctamente!");
             info("Compra exitosa",
                     "Ticket adquirido.\nTipo: " + tipo

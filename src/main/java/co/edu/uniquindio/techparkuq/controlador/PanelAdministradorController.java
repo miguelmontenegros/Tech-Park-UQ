@@ -288,6 +288,7 @@ public class PanelAdministradorController {
             sel.setNombre(nombre);
             sel.setEdad(edad);
             ModelFactoryController.getInstance().guardarDatosSerializable();
+            actualizarCombosOperador();
             refrescarUI();
             limpiarFormEmp();
             info("Éxito", "Datos del empleado actualizados.");
@@ -326,6 +327,7 @@ public class PanelAdministradorController {
             ModelFactoryController.getInstance().guardarDatosSerializable();
             cargarZonas();
             cargarAtracciones();
+            actualizarCombosZona();
             refrescarUI();
             limpiarFormZona();
             info("Zona creada", "La zona '" + nombre + "' fue registrada.");
@@ -353,6 +355,7 @@ public class PanelAdministradorController {
             sel.setNombre(nombre);
             sel.setCapacidadMaxima(cap);
             ModelFactoryController.getInstance().guardarDatosSerializable();
+            actualizarCombosZona();
             refrescarUI();
             limpiarFormZona();
             info("Éxito", "Zona actualizada correctamente.");
@@ -373,9 +376,10 @@ public class PanelAdministradorController {
         ModelFactoryController.getInstance().guardarDatosSerializable();
         cargarZonas();
         cargarAtracciones();
+        actualizarCombosZona();
         refrescarUI();
         limpiarFormZona();
-        info("Éxito", "Zona eliminada del sistema.");
+        info("Éxito", "Zona Frame eliminada.");
     }
 
     @FXML
@@ -384,7 +388,7 @@ public class PanelAdministradorController {
         String nombre = txtAtrNombre.getText().trim();
         TipoAtraccion tipo = cmbAtrTipo.getValue();
         String zonaNombre = cmbAtrZona.getValue();
-        String capStr = txtAtrCapacidad.getText().trim();
+        String capStr = txtAtrCapacity();
 
         if (id.isEmpty() || nombre.isEmpty() || tipo == null || zonaNombre == null || capStr.isEmpty()) {
             alerta("Campos incompletos", "Complete: ID, Nombre, Tipo, Zona y Capacidad.");
@@ -409,12 +413,17 @@ public class PanelAdministradorController {
             ModelFactoryController.getInstance().guardarDatosSerializable();
             cargarAtracciones();
             cargarZonas();
+            actualizarCombosZona();
             refrescarUI();
             limpiarFormAtr();
             info("Atracción creada", "'" + nombre + "' registrada en " + zonaNombre + ".");
         } catch (NumberFormatException ex) {
             alerta("Error de formato", "Revise los campos numéricos.");
         }
+    }
+
+    private String txtAtrCapacity() {
+        return txtAtrCapacidad.getText().trim();
     }
 
     @FXML
@@ -426,7 +435,7 @@ public class PanelAdministradorController {
         }
         String nombre = txtAtrNombre.getText().trim();
         String zonaNombre = cmbAtrZona.getValue();
-        String capStr = txtAtrCapacidad.getText().trim();
+        String capStr = txtAtrCapacity();
 
         if (nombre.isEmpty() || zonaNombre == null || capStr.isEmpty()) {
             alerta("Campos incompletos", "Complete Nombre, Zona y Capacidad para actualizar.");
@@ -458,6 +467,7 @@ public class PanelAdministradorController {
             sel.setEdadMinima(edMin);
             sel.setCostoAdicional(costo);
             ModelFactoryController.getInstance().guardarDatosSerializable();
+            actualizarCombosZona();
             refrescarUI();
             limpiarFormAtr();
             info("Éxito", "Atracción actualizada en el sistema.");
@@ -481,6 +491,7 @@ public class PanelAdministradorController {
         if (sel == null) { alerta("Sin selección", "Seleccione una atracción."); return; }
         parque.eliminarAtraccion(sel.getIdUnico());
         ModelFactoryController.getInstance().guardarDatosSerializable();
+        actualizarCombosZona();
         refrescarUI();
         limpiarFormAtr();
         info("Atracción deshabilitada", "Estado cambiado a CERRADA.");
@@ -502,6 +513,7 @@ public class PanelAdministradorController {
         op.getListAtraccionesGestionadas().clear();
         op.getListAtraccionesGestionadas().addAll(zona.getListaAtracciones());
         ModelFactoryController.getInstance().guardarDatosSerializable();
+        actualizarCombosOperador();
         refrescarUI();
         info("Asignación exitosa", op.getNombre() + " asignado a " + zona.getNombre() + ".");
     }
@@ -523,6 +535,7 @@ public class PanelAdministradorController {
         op.setZonaAsignada(null);
         op.getListAtraccionesGestionadas().clear();
         ModelFactoryController.getInstance().guardarDatosSerializable();
+        actualizarCombosOperador();
         refrescarUI();
         info("Desasignación exitosa", op.getNombre() + " desvinculado.");
     }
