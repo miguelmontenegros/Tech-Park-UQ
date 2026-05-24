@@ -1,6 +1,8 @@
 package co.edu.uniquindio.techparkuq.controlador;
 
 import co.edu.uniquindio.techparkuq.modelo.Parque;
+import co.edu.uniquindio.techparkuq.modelo.Administrador;
+import co.edu.uniquindio.techparkuq.modelo.abstractas.Empleado;
 import java.io.*;
 
 public class ModelFactoryController {
@@ -22,6 +24,19 @@ public class ModelFactoryController {
             System.out.println("No se encontró archivo de datos. Iniciando parque por defecto.");
             this.parque = new Parque("Tech-Park UQ", 500);
             guardarDatosSerializable();
+        } else {
+            boolean existeAdmin = false;
+            for (Empleado e : this.parque.getListaEmpleados()) {
+                if (e instanceof Administrador && "12345".equals(e.getDocumento())) {
+                    existeAdmin = true;
+                    break;
+                }
+            }
+            if (!existeAdmin) {
+                Administrador adminMaestro = new Administrador("Admin Principal", "12345", 30, "ALTO", this.parque);
+                this.parque.getListaEmpleados().add(adminMaestro);
+                guardarDatosSerializable();
+            }
         }
     }
 
