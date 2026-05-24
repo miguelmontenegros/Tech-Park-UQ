@@ -557,7 +557,6 @@ public class PanelAdministradorController {
             }
         }
 
-        // --- AQUÍ ESTÁ LA INTEGRACIÓN DE LAS ESTADÍSTICAS AVANZADAS ---
         sb.append("\n\n").append(parque.generarReporteEstadistico());
 
         areaReporte.setText(sb.toString());

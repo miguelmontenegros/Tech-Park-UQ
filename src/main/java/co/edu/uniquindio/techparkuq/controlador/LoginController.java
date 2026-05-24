@@ -2,6 +2,7 @@ package co.edu.uniquindio.techparkuq.controlador;
 
 import co.edu.uniquindio.techparkuq.modelo.*;
 import co.edu.uniquindio.techparkuq.modelo.abstractas.Empleado;
+import co.edu.uniquindio.techparkuq.modelo.abstractas.Persona;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -24,7 +25,9 @@ public class LoginController {
 
     @FXML
     void onAdminClick(ActionEvent event) {
-        abrirPanel("/co/edu/uniquindio/techparkuq/vista/PanelAdministrador.fxml", "Admin", null);
+        rolSeleccionado = "ADMINISTRADOR";
+        lblDocumento.setText("Documento del Administrador:");
+        mostrarCredencial(true);
     }
 
     @FXML
@@ -48,7 +51,14 @@ public class LoginController {
             mostrarAlerta("Campo vacío", "Por favor ingrese un número de documento.");
             return;
         }
-        if ("OPERADOR".equals(rolSeleccionado)) {
+        if ("ADMINISTRADOR".equals(rolSeleccionado)) {
+            Persona p = parque.buscarPersonaPorDocumento(doc);
+            if (p instanceof Administrador) {
+                abrirPanel("/co/edu/uniquindio/techparkuq/vista/PanelAdministrador.fxml", "Admin", p);
+            } else {
+                mostrarAlerta("Acceso denegado", "No existe administrador con documento: " + doc);
+            }
+        } else if ("OPERADOR".equals(rolSeleccionado)) {
             Operador op = buscarOperador(doc);
             if (op == null) {
                 mostrarAlerta("Operador no encontrado", "No existe operador con documento: " + doc);
